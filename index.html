@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>LayoutLand </title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <style>
+        img {
+            width: 100%;
+            height: auto;
+            position: relative;
+            vertical-align: top;
+        }
+
+        #row {
+            width: 100%;
+        }
+
+        .imageDiv {
+            width: 25%;
+            padding: 5px;
+            display: inline-block;
+            align-content: start;
+            vertical-align: top;
+        }
+    </style>
+
+    <h1>LayoutLand </h1>
+    <h2>by Jeff Weekley and Montana Fowler</h2>
+    <h3>CMPM202 - UC Santa Cruz - Winter 2020</h3>
+
+
+    <h4>1. Upload Image</h4>
+    <form action={{ url_for('layoutLand') }} method="post">
+        <input type="text" name="imageNameInput">
+        <input type="submit">
+    </form>
+
+    <div id="row">
+        <div id="emotionsDetected" class="imageDiv">
+            <h4>2. Detect Emotions</h4>
+            <img src="data:image/jpg;base64,{{data}}" />
+            <h5>{{ emotion }}</h5>
+        </div>
+
+        <div id="emotionalArt" class="imageDiv">
+            <h4>3. Provide Art associated with your emotions</h4>
+            {% for art in artImages %}
+            <img src="{{ art }}"></img>
+            {% endfor %}
+        </div>
+
+
+        <div id="tweet" class="imageDiv">
+            <h4>4. Provide your Tweet for today</h4>
+            <p id="tweetText" value="{{ text }}">{{ text }}</p>
+        </div>
+
+    </div>
+
+
+
+</body>
+</html>
