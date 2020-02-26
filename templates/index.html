@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -40,25 +40,21 @@
     </form>
 
     <div id="row">
-        <div id="emotionsDetected" class="imageDiv">
-            <h4>2. Detect Emotions</h4>
-            <img src="data:image/jpg;base64,{{data}}" />
-            <h5>{{ emotion }}</h5>
+
+
+        <div id="inputImg" class="imageDiv">
+            <h4>2. Input Image</h4>
+            <img src="data:image/jpg;base64,{{inputData}}" />
         </div>
 
-        <div id="emotionalArt" class="imageDiv">
-            <h4>3. Provide Art associated with your emotions</h4>
-            {% for art in artImages %}
-            <img src="{{ art }}"></img>
-            {% endfor %}
+        <div id="segmentedImg" class="imageDiv">
+            <h4>3. Segmented Image</h4>
+            <img src="data:image/jpg;base64,{{segmentedData}}" />
+            <p>{{segmentedData}}<p />
         </div>
 
 
-        <div id="tweet" class="imageDiv">
-            <h4>4. Provide your Tweet for today</h4>
-            <p id="tweetText" value="{{ text }}">{{ text }}</p>
-        </div>
-
+        <h4>{{text}}</h4>
     </div>
 
 
