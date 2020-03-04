@@ -3,12 +3,14 @@ import cv2
 import os
 IPHONE_7_DIMENSIONS = [750, 1334] #width, height
 IPHONE_X_DIMENSIONS = [1125, 2436] #width, height
+IPHONE_XS_MAX_DIMENSIONS = [1242, 2688] #width, height
 UNDETECTED_PHONE_TYPE = "UNDETECTED"
 IPHONE7 = "IPHONE7"
 IPHONEX = "IPHONEX"
+IPHONEXS_MAX = "IPHONEXS_MAX"
 
 #input screenshot
-inputFilename = "montana.png"
+inputFilename = "jeff.png"
 homeScreen = cv2.imread("../data/" + inputFilename)
 
 #make folder with name of screenshot if it doesn't exist
@@ -26,6 +28,9 @@ if (dimensions[1] == IPHONE_7_DIMENSIONS[0]) and (dimensions[0] == IPHONE_7_DIME
     phoneType = IPHONE7
 elif (dimensions[1] == IPHONE_X_DIMENSIONS[0]) and (dimensions[0] == IPHONE_X_DIMENSIONS[1]):
     phoneType = IPHONEX
+elif (dimensions[1] == IPHONE_XS_MAX_DIMENSIONS[0]) and (dimensions[0] == IPHONE_XS_MAX_DIMENSIONS[1]):
+    phoneType = IPHONEXS_MAX
+
 print ("phone type: " + str(phoneType))
 
 frameSize = 110
@@ -47,6 +52,11 @@ elif phoneType == IPHONEX:
     stepX = 255
     stepY = 305
     startCenter = [175, 300]
+elif phoneType == IPHONEXS_MAX:
+    frameSize = 195
+    stepX = 290
+    stepY = 335
+    startCenter = [190, 330]
 else:
     exit()
 
