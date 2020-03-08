@@ -57,7 +57,7 @@ def load_labels(label_file):
 
 if __name__ == "__main__":
   current_dir = os.path.dirname(os.path.realpath(__file__))
-  classifier_data_dir = os.path.join(current_dir, 'my_test')
+  classifier_data_dir = os.path.join(current_dir, 'output')
 
   file_name = None
   model_file = os.path.join(classifier_data_dir, 'saved_model.pb')
