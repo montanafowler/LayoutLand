@@ -124,10 +124,17 @@ def layoutLand():
         print ("segmanetedImagesFolder " + segmentedImagesFolder)
         for filename in os.listdir(segmentedImagesFolder):
             print ("filename " + filename)
+            # encode the app icon into the array
             with open(segmentedImagesFolder + "/" + filename, "rb") as image_file:
                 img = image_file.read()
                 segmentedData.append(base64.b64encode(img).decode('utf8'))
                 print ("encoded segmented image " + filename)
+            # classify the app icon
+            newImageFilepath = segmentedImagesFolder + "/" + filename
+            print ("classifying " + newImageFilepath)
+            os.system("python classifier-builder-master\\run_model.py --image " + newImageFilepath)
+            print("done classifying")
+
         with open(pathToInput, "rb") as image_file:
             img = image_file.read()
             inputData = base64.b64encode(img)
