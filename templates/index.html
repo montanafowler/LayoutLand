@@ -49,8 +49,10 @@
 
         <div id="segmentedImg" class="imageDiv">
             <h4>3. Segmented Image</h4>
-            <img src="data:image/jpg;base64,{{segmentedData}}" />
-            <p>{{segmentedData}}<p />
+            {% for app in segmentedData %}
+              <img src="data:image/jpg;base64,{{app}}" />
+            {% endfor %}
+
         </div>
 
 

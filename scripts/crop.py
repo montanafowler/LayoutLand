@@ -51,7 +51,7 @@ elif phoneType == IPHONEX:
     frameSize = 180
     stepX = 261
     stepY = 306
-    startCenter = [175, 300]
+    startCenter = [171, 306]
     #startCenter = [81, 216]
 elif phoneType == IPHONEXS_MAX:
     frameSize = 195
