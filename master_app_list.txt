@@ -8,7 +8,7 @@ maps
 app store
 weather
 notes
-twitter
+instagram
 airbnb
 
 

@@ -10,7 +10,7 @@ IPHONEX = "IPHONEX"
 IPHONEXS_MAX = "IPHONEXS_MAX"
 
 #input screenshot
-inputFilename = "jeff.png"
+inputFilename = "montana.png"
 homeScreen = cv2.imread("../data/" + inputFilename)
 
 #make folder with name of screenshot if it doesn't exist
@@ -48,10 +48,11 @@ if phoneType == IPHONE7:
     stepY = 175
     startCenter = [105, 120] #x, y
 elif phoneType == IPHONEX:
-    frameSize = 150
-    stepX = 255
-    stepY = 305
+    frameSize = 180
+    stepX = 261
+    stepY = 306
     startCenter = [175, 300]
+    #startCenter = [81, 216]
 elif phoneType == IPHONEXS_MAX:
     frameSize = 195
     stepX = 290
@@ -78,8 +79,9 @@ for row in range(0, 6):
         # save the image
         imageFilename = letters[row] + str(col) + ".jpg"
         cv2.imwrite("../data/" + splitFilenameArray[0] + "/" + imageFilename, cropped)
-        cv2.imshow("cropped", cropped)
-        cv2.waitKey(0)
+        print ("saved " + "../data/" + splitFilenameArray[0] + "/" + imageFilename)
+        #cv2.imshow("cropped", cropped) #makes the icon pop up
+        #cv2.waitKey(0)
 
 
 #crop_img = img[y:y+h, x:x+w]
