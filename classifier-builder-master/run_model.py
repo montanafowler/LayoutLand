@@ -105,7 +105,14 @@ if __name__ == "__main__":
 
   # Output the results
   print('Top results:')
+  count = 0
   for i in top_k:
     if results[i] < threshold:
         break
     print('    %s - %f' % (labels[i], results[i]))
+    if count == 0:
+        with open('classificationOutput.txt', 'w') as f:
+            f.write(str(labels[i]) + " - " + str(results[i]))
+            print ("wrote " + str(labels[i]) + " - " + str(results[i]))
+            print ("with open write to file ")
+    count += 1

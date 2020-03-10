@@ -8,7 +8,7 @@
 </head>
 <body>
     <style>
-        img {
+        #originalImage {
             width: 100%;
             height: auto;
             position: relative;
@@ -20,11 +20,18 @@
         }
 
         .imageDiv {
-            width: 25%;
+            width: 45%;
             padding: 5px;
             display: inline-block;
             align-content: start;
             vertical-align: top;
+        }
+
+        .appImg {
+          width: 20%;
+          height: auto;
+          position: relative;
+          vertical-align: top;
         }
     </style>
 
@@ -44,14 +51,19 @@
 
         <div id="inputImg" class="imageDiv">
             <h4>2. Input Image</h4>
-            <img src="data:image/jpg;base64,{{inputData}}" />
+            <img id="originalImage" src="data:image/jpg;base64,{{inputData}}" />
         </div>
 
         <div id="segmentedImg" class="imageDiv">
             <h4>3. Segmented Image</h4>
             {% for app in segmentedData %}
-              <img src="data:image/jpg;base64,{{app}}" />
+              <img class="appImg" src="data:image/jpg;base64,{{app}}" />
+
             {% endfor %}
+            {% for text in segmentedDataClassifications %}
+              <p value="{{ text }}">{{ text }}</p>
+            {% endfor %}
+
 
         </div>
 
