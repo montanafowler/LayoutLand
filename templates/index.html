@@ -26,6 +26,13 @@
             align-content: start;
             vertical-align: top;
         }
+        .imageDivOriginal {
+            width: 20%;
+            padding: 5px;
+            display: inline-block;
+            align-content: start;
+            vertical-align: top;
+        }
 
         .appImg {
           width: 20%;
@@ -49,7 +56,7 @@
     <div id="row">
 
 
-        <div id="inputImg" class="imageDiv">
+        <div id="inputImg" class="imageDivOriginal">
             <h4>2. Input Image</h4>
             <img id="originalImage" src="data:image/jpg;base64,{{inputData}}" />
         </div>
@@ -63,8 +70,30 @@
             {% for text in segmentedDataClassifications %}
               <p value="{{ text }}">{{ text }}</p>
             {% endfor %}
+        </div>
 
+        <div id="layoutGame" class="imageDiv">
+          <h4> 4. Drag your apps into the optimal layout arrangement.
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+            <div class="appSpot"/>
 
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+
+            <div class="appSpot"/>
+
+            <div class="appSpot"/>
+            <div class="appSpot"/>
+            <div class="appSpot"/>
         </div>
 
 

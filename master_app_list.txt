@@ -10,6 +10,7 @@ weather
 notes
 instagram
 airbnb
+add more calendar to the calendar training
 
 
 FROM MODEL:
