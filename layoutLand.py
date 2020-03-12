@@ -152,7 +152,7 @@ def layoutLand():
 
     appSpotSize = 100.0 / cols
     spotCountArray = []
-    for i in range(rows * cols):
+    for i in range(int(rows) * int(cols)):
         spotCountArray.append(appSpotSize)
     print(spotCountArray)
     return render_template("index.html", text="temp text", segmentedData=segmentedData, segmentedDataClassifications=segmentedDataClassifications, inputData=inputData.decode('utf8'), spotCountArray=spotCountArray)

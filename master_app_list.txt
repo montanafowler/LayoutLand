@@ -1,17 +1,21 @@
 NEED:
-safari
-slack
 podcasts
 spotify
 photos
-maps
+apple maps (should we combine maps)
+google maps
 app store
 weather
 notes
 instagram
 airbnb
-add more calendar to the calendar training
+add apple settings icon to settings because right now it IDs as safari
 
+
+ADDED:
+safari
+slack
+add more calendar to the calendar training
 
 FROM MODEL:
 airplane

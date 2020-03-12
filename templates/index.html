@@ -20,14 +20,14 @@
         }
 
         .imageDiv {
-            width: 45%;
+            width: 38%;
             padding: 5px;
             display: inline-block;
             align-content: start;
             vertical-align: top;
         }
         .imageDivOriginal {
-            width: 20%;
+            width: 15%;
             padding: 5px;
             display: inline-block;
             align-content: start;
@@ -78,13 +78,9 @@
 
         <div id="layoutGame" class="imageDiv">
           <h4> 4. Drag your apps into the optimal layout arrangement.
-            {%for r in range(0, rows)%}
-              {%for c in range(0, cols)%}
-                <div class="appSpot" style="width: calc( 100% / {{cols}}); height: calc( 100% / {{cols}});"/>
-              {%endfor%}
+            {%for item in spotCountArray%}
+              <div class="appSpot" style="width: calc({{item}} * 100%); height: calc({{item}} * 100%);"/>
             {%endfor%}
-
-
         </div>
 
 
