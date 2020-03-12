@@ -40,6 +40,10 @@
           position: relative;
           vertical-align: top;
         }
+
+        .appSpot {
+          background-color: #BCF1E8;
+        }
     </style>
 
     <h1>LayoutLand </h1>
@@ -74,26 +78,13 @@
 
         <div id="layoutGame" class="imageDiv">
           <h4> 4. Drag your apps into the optimal layout arrangement.
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-            <div class="appSpot"/>
+            {%for r in range(0, rows)%}
+              {%for c in range(0, cols)%}
+                <div class="appSpot" style="width: calc( 100% / {{cols}}); height: calc( 100% / {{cols}});"/>
+              {%endfor%}
+            {%endfor%}
 
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-            <div class="appSpot"/>
 
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-
-            <div class="appSpot"/>
-
-            <div class="appSpot"/>
-            <div class="appSpot"/>
-            <div class="appSpot"/>
         </div>
 
 
