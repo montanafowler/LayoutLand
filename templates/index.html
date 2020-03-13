@@ -42,7 +42,21 @@
         }
 
         .appSpot {
-          background-color: #BCF1E8;
+          position: relative;
+          vertical-align: top;
+          border: 2px;
+          display: inline-block;
+          align-content: start;
+          vertical-align: top;
+        }
+
+        #layoutGame {
+          height: 1000px;
+          width: 38%;
+          padding: 5px;
+          display: inline-block;
+          align-content: start;
+          vertical-align: top;
         }
     </style>
 
@@ -77,17 +91,37 @@
         </div>
 
         <div id="layoutGame" class="imageDiv">
-          <h4> 4. Drag your apps into the optimal layout arrangement.
+          <h4> 4. Drag your apps into the optimal layout arrangement. </h4>
+            <script>
+              var layoutGameDiv = document.getElementById("layoutGame");
+              let size = layoutGameDiv.offsetWidth / parseFloat('{{cols}}') - 5.0;
+              console.log("layoutGameDiv.width " + layoutGameDiv.offsetWidth)
+              console.log("size " + size.toString());
+              var count = 0;
+              for (let r = 0; r < parseInt('{{rows}}'); r++) {
+                for (let c = 0; c < parseInt('{{cols}}'); c++) {
+                  sizeString = size.toString() + "px;";
+                  let div = document.createElement('div');
+                  div.className = "appSpot";
+                  if((r + c)%2 != 0) {
+                    div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #BCF1E8;';
+                  } else {
+                    div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #D3D3D3;';
+                  }
+
+                  console.log("r " + r.toString() + " c " + c.toString());
+                  layoutGame.appendChild(div);
+                  count += 1;
+                }
+              }
+            </script>
+
             {%for item in spotCountArray%}
-              <div class="appSpot" style="width: calc({{item}} * 100%); height: calc({{item}} * 100%);"/>
+              <div class="appSpot" style="width: calc({{item}} * 1%); height: calc({{item}} * 100%);">
+                <p value="{{item}}"/>
+              </div>
             {%endfor%}
         </div>
-
-
-        <h4>{{text}}</h4>
     </div>
-
-
-
 </body>
 </html>
