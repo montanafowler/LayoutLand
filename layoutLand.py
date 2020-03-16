@@ -121,7 +121,9 @@ def layoutLand():
         segmentedData = []
         segmentedDataClassifications = []
         for filename in os.listdir(segmentedImagesFolder):
-            if filename.contains("histagrams"):
+
+            print("filename " + filename)
+            if "histagrams" in filename:
                 print("skipping histagrams folder in loop")
                 continue
             # encode the app icon into the array

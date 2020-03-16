@@ -72,21 +72,7 @@
   border: 1px solid #aaaaaa;
 }
     </style>
-    <script>
-      function allowDrop(ev) {
-        ev.preventDefault();
-      }
 
-      function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-      }
-
-      function drop(ev) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
-      }
-    </script>
 
     <h1>LayoutLand </h1>
     <h2>by Montana Fowler and Jeff Weekley</h2>
@@ -122,19 +108,7 @@
           <h4> 4. Drag your apps into the optimal layout arrangement. </h4>
 
           <script>
-          function allowDrop(ev) {
-            ev.preventDefault();
-          }
 
-          function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-          }
-
-          function drop(ev) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            ev.target.appendChild(document.getElementById(data));
-          }
 
             var layoutGameDiv = document.getElementById("layoutGame");
             let size = layoutGameDiv.offsetWidth / parseFloat('{{cols}}') - 5.0;
@@ -147,20 +121,46 @@
                 let div = document.createElement('div');
                 div.className = "appSpot";
                 div.id = r.toString() + '_' + c.toString();
-                div.ondrop = "event.stopPropagation(); event.preventDefault(); drop(event); console.log('drop')";
-                div.ondragover="event.stopPropagation(); event.preventDefault(); allowDrop(event);";
-                div.ondragcenter="event.stopPropagation(); event.preventDefault();";
+
+                div.setAttribute("ondrop", "drop(event)");
+                div.setAttribute("ondragover", "allowDrop(event)");
+
+
                 if((r + c)%2 != 0) {
                   div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #BCF1E8;';
                 } else {
                   div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #D3D3D3;';
                 }
-                layoutGame.appendChild(div);
+                layoutGameDiv.appendChild(div);
+                let fakeChild = document.createElement('div');
+                fakeChild.id = div.id + "_fakeChild";
+                div.appendChild(fakeChild);
                 count += 1;
               }
             }
-          </script>
 
+            function allowDrop(ev) {
+              ev.preventDefault();
+            }
+
+            function drag(ev) {
+              ev.dataTransfer.setData("appIconId", ev.target.id);
+            }
+
+            function drop(ev, divId) {
+              ev.preventDefault();
+              var data = ev.dataTransfer.getData("appIconId");
+              console.log("data: " + data);
+              console.log("ev.target.id " + ev.target.id);
+              console.log(document.getElementById(ev.target.id));
+              console.log(typeof document.getElementById(ev.target.id));
+              console.log(typeof document.getElementById(data));
+              var appSpot = document.getElementById(ev.target.id);
+              console.log(document.getElementById(data));
+              appSpot.appendChild(document.getElementById(data));
+            }
+          </script>
+          <img src="https://news.artnet.com/app/news-upload/2018/02/image-256x256.jpg" id="dogpic" draggable="true" ondragstart="drag(event)"/>
           <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
           <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
         </div>
