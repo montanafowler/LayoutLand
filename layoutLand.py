@@ -105,7 +105,7 @@ def segmentImage(pathToInput, imageName):
 def layoutLand():
     # if we are initializing the page, just return the html
     if request.method == 'GET':
-        return render_template("index.html")
+        return render_template("index.html", segmentedData={})
 
     # if we have received an image name then save it
     imageName = request.form['imageNameInput']
@@ -118,7 +118,7 @@ def layoutLand():
 
     if os.path.isfile(pathToInput):
         segmentedImagesFolder = segmentImage(pathToInput, imageName)
-        segmentedData = []
+        segmentedData = {}
         segmentedDataClassifications = []
         for filename in os.listdir(segmentedImagesFolder):
 
@@ -129,7 +129,13 @@ def layoutLand():
             # encode the app icon into the array
             with open(segmentedImagesFolder + "/" + filename, "rb") as image_file:
                 img = image_file.read()
-                segmentedData.append(base64.b64encode(img).decode('utf8'))
+                splitFilenameToGetCode = filename.split(".")
+                print("splitFilenameToGetCode " + str(splitFilenameToGetCode))
+                segmentedData[splitFilenameToGetCode[0]] = base64.b64encode(img).decode('utf8')
+                print(segmentedData.keys())
+                print(segmentedData[splitFilenameToGetCode[0]])
+
+
             # classify the app icon
             newImageFilepath = segmentedImagesFolder + "/" + filename
             os.system("python classifier-builder-master\\run_model.py --image " + newImageFilepath)
@@ -148,7 +154,7 @@ def layoutLand():
             inputData = base64.b64encode(img)
     else:
         print("File not found!")
-        return render_template("index.html")
+        return render_template("index.html", segmentedData={})
 
     if (phoneType == IPHONE7 or phoneType == IPHONEX or phoneType == IPHONEXS_MAX):
         rows = 6.0

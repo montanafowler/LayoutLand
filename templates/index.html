@@ -95,8 +95,8 @@
 
         <div id="segmentedImg" class="imageDiv">
             <h4>3. Segmented Image</h4>
-            {% for app in segmentedData %}
-              <img class="appImg" draggable="true" ondragstart="drag(event)" src="data:image/jpg;base64,{{app}}" />
+            {% for id,encodedImg in segmentedData.items() %}
+              <img class="appImg" id="{{id}}" draggable="true" ondragstart="drag(event)" src="data:image/jpg;base64,{{encodedImg}}" />
 
             {% endfor %}
             {% for text in segmentedDataClassifications %}
