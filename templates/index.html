@@ -58,7 +58,35 @@
           align-content: start;
           vertical-align: top;
         }
+
+        #div1 {
+  width: 350px;
+  height: 350px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+}
+#div2 {
+  width: 350px;
+  height: 350px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+}
     </style>
+    <script>
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+      }
+
+      function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+      }
+    </script>
 
     <h1>LayoutLand </h1>
     <h2>by Montana Fowler and Jeff Weekley</h2>
@@ -82,7 +110,7 @@
         <div id="segmentedImg" class="imageDiv">
             <h4>3. Segmented Image</h4>
             {% for app in segmentedData %}
-              <img class="appImg" src="data:image/jpg;base64,{{app}}" />
+              <img class="appImg" draggable="true" ondragstart="drag(event)" src="data:image/jpg;base64,{{app}}" />
 
             {% endfor %}
             {% for text in segmentedDataClassifications %}
@@ -92,35 +120,49 @@
 
         <div id="layoutGame" class="imageDiv">
           <h4> 4. Drag your apps into the optimal layout arrangement. </h4>
-            <script>
-              var layoutGameDiv = document.getElementById("layoutGame");
-              let size = layoutGameDiv.offsetWidth / parseFloat('{{cols}}') - 5.0;
-              console.log("layoutGameDiv.width " + layoutGameDiv.offsetWidth)
-              console.log("size " + size.toString());
-              var count = 0;
-              for (let r = 0; r < parseInt('{{rows}}'); r++) {
-                for (let c = 0; c < parseInt('{{cols}}'); c++) {
-                  sizeString = size.toString() + "px;";
-                  let div = document.createElement('div');
-                  div.className = "appSpot";
-                  if((r + c)%2 != 0) {
-                    div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #BCF1E8;';
-                  } else {
-                    div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #D3D3D3;';
-                  }
 
-                  console.log("r " + r.toString() + " c " + c.toString());
-                  layoutGame.appendChild(div);
-                  count += 1;
+          <script>
+          function allowDrop(ev) {
+            ev.preventDefault();
+          }
+
+          function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+          }
+
+          function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+          }
+
+            var layoutGameDiv = document.getElementById("layoutGame");
+            let size = layoutGameDiv.offsetWidth / parseFloat('{{cols}}') - 5.0;
+            console.log("layoutGameDiv.width " + layoutGameDiv.offsetWidth)
+            console.log("size " + size.toString());
+            var count = 0;
+            for (let r = 0; r < parseInt('{{rows}}'); r++) {
+              for (let c = 0; c < parseInt('{{cols}}'); c++) {
+                sizeString = size.toString() + "px;";
+                let div = document.createElement('div');
+                div.className = "appSpot";
+                div.id = r.toString() + '_' + c.toString();
+                div.ondrop = "event.stopPropagation(); event.preventDefault(); drop(event); console.log('drop')";
+                div.ondragover="event.stopPropagation(); event.preventDefault(); allowDrop(event);";
+                div.ondragcenter="event.stopPropagation(); event.preventDefault();";
+                if((r + c)%2 != 0) {
+                  div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #BCF1E8;';
+                } else {
+                  div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #D3D3D3;';
                 }
+                layoutGame.appendChild(div);
+                count += 1;
               }
-            </script>
+            }
+          </script>
 
-            {%for item in spotCountArray%}
-              <div class="appSpot" style="width: calc({{item}} * 1%); height: calc({{item}} * 100%);">
-                <p value="{{item}}"/>
-              </div>
-            {%endfor%}
+          <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+          <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
         </div>
     </div>
 </body>

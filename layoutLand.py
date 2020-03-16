@@ -121,6 +121,9 @@ def layoutLand():
         segmentedData = []
         segmentedDataClassifications = []
         for filename in os.listdir(segmentedImagesFolder):
+            if filename.contains("histagrams"):
+                print("skipping histagrams folder in loop")
+                continue
             # encode the app icon into the array
             with open(segmentedImagesFolder + "/" + filename, "rb") as image_file:
                 img = image_file.read()
@@ -135,13 +138,15 @@ def layoutLand():
                 print("text: " + txt)
                 segmentedDataClassifications.append(txt)
 
+            # process the histagram of the app icon
+            os.system("python findDominantColor.py --image " + newImageFilepath)
+
         with open(pathToInput, "rb") as image_file:
             img = image_file.read()
             inputData = base64.b64encode(img)
     else:
         print("File not found!")
         return render_template("index.html")
-    print("!!!!!" + str(phoneType))
 
     if (phoneType == IPHONE7 or phoneType == IPHONEX or phoneType == IPHONEXS_MAX):
         rows = 6.0
