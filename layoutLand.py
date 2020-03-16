@@ -130,10 +130,7 @@ def layoutLand():
             with open(segmentedImagesFolder + "/" + filename, "rb") as image_file:
                 img = image_file.read()
                 splitFilenameToGetCode = filename.split(".")
-                print("splitFilenameToGetCode " + str(splitFilenameToGetCode))
                 segmentedData[splitFilenameToGetCode[0]] = base64.b64encode(img).decode('utf8')
-                print(segmentedData.keys())
-                print(segmentedData[splitFilenameToGetCode[0]])
 
 
             # classify the app icon

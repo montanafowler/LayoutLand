@@ -37,8 +37,6 @@
         .appImg {
           width: 20%;
           height: auto;
-          position: relative;
-          vertical-align: top;
         }
 
         .appSpot {
@@ -46,7 +44,7 @@
           vertical-align: top;
           border: 2px;
           display: inline-block;
-          align-content: start;
+          align-content: center;
           vertical-align: top;
         }
 
@@ -97,7 +95,6 @@
             <h4>3. Segmented Image</h4>
             {% for id,encodedImg in segmentedData.items() %}
               <img class="appImg" id="{{id}}" draggable="true" ondragstart="drag(event)" src="data:image/jpg;base64,{{encodedImg}}" />
-
             {% endfor %}
             {% for text in segmentedDataClassifications %}
               <p value="{{ text }}">{{ text }}</p>
@@ -132,9 +129,6 @@
                   div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #D3D3D3;';
                 }
                 layoutGameDiv.appendChild(div);
-                let fakeChild = document.createElement('div');
-                fakeChild.id = div.id + "_fakeChild";
-                div.appendChild(fakeChild);
                 count += 1;
               }
             }
@@ -149,20 +143,33 @@
 
             function drop(ev, divId) {
               ev.preventDefault();
-              var data = ev.dataTransfer.getData("appIconId");
-              console.log("data: " + data);
-              console.log("ev.target.id " + ev.target.id);
-              console.log(document.getElementById(ev.target.id));
-              console.log(typeof document.getElementById(ev.target.id));
-              console.log(typeof document.getElementById(data));
+              // get the app we are moving
+              var appIconId = ev.dataTransfer.getData("appIconId");
+              var originalAppIcon = document.getElementById(appIconId);
+
+              // get the div of the app spot
               var appSpot = document.getElementById(ev.target.id);
-              console.log(document.getElementById(data));
-              appSpot.appendChild(document.getElementById(data));
+
+              // if it is a drag and drop from an icon that was originally on the left
+              if(!appIconId.includes("cloned")) {
+                // clone it
+                var clonedAppIcon = originalAppIcon.cloneNode(true);
+                clonedAppIcon.id = appIconId + "_cloned";
+                clonedAppIcon.setAttribute("style", "width: 90%; height: auto; margin-left: auto; margin-right: auto;");
+                appSpot.appendChild(clonedAppIcon);
+
+                //now modify the original
+                originalAppIcon.setAttribute("style", "opacity: 30%;"); //grey out
+                originalAppIcon.setAttribute("draggable", "false"); //make it not draggable anymore
+                originalAppIcon.setAttribute("dragstart", "");
+              } else {
+                // it is a cloned app, so don't clone it again, just drag it
+                appSpot.appendChild(originalAppIcon);
+              }
+              console.log("appIconId: " + appIconId);
+              console.log("ev.target.id " + ev.target.id);
             }
           </script>
-          <img src="https://news.artnet.com/app/news-upload/2018/02/image-256x256.jpg" id="dogpic" draggable="true" ondragstart="drag(event)"/>
-          <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-          <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
         </div>
     </div>
 </body>
