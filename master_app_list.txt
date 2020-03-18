@@ -1,21 +1,24 @@
 NEED:
 podcasts
-spotify
 photos
-apple maps (should we combine maps)
-google maps
-app store
-weather
 notes
-instagram
-airbnb
 add apple settings icon to settings because right now it IDs as safari
+
+TO ADD FROM JEFF:
 
 
 ADDED:
 safari
 slack
 add more calendar to the calendar training
+TikTok
+Spotify
+Airbnb
+Instagram
+maps
+AppStore
+Weather
+
 
 FROM MODEL:
 airplane
