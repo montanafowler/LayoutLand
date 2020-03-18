@@ -1,0 +1,82 @@
+_______________________HOW APPS CLASSIFY_______________________
+
+MOST USED APPS Of 2019
+YouTube: television - 0.954678
+Instagram: instagram - 0.992927
+Snapchat:  moon - 0.687030
+TikTok: tiktok - 0.907040
+Messenger: maps - 0.247036
+Gmail: gmail - 0.938425
+Netflix: bookmark - 0.822383
+Facebook: facebook - 0.922909
+Google Maps:  maps - 0.979775
+Amazon: calendar - 0.559612
+Spotify: spotify - 0.874147
+DoorDash: airplane - 0.521874
+WhatsApp: pinterest - 0.321375
+FaceApp: weather - 0.674589
+Uber: bag - 0.805216
+YOLO: bag - 0.328013
+Hulu: chart - 0.196113
+Venmo: bookmark - 0.258247
+Bitmoji: google - 0.382199
+Google Chome: camera - 0.250084
+
+MORE APPLE APPS:
+Apple Maps: maps - 0.293337
+Messages: weather - 0.659690
+Mail: mail - 0.998767
+Safari: clock - 0.508846, safari - 0.409800
+Camera: camera - 0.866358
+Photos: weather - 0.519777
+Phone: twitter - 0.650259
+FaceTime: video camera - 0.646251
+Music: music - 0.990503
+Apple Calendar: music - 0.355120, calendar - 0.175579
+Weather: weather - 0.809097
+Podcasts: spotify - 0.809459
+Notes: folder - 0.332057
+Calculator: calculator - 0.883121
+Health: weather - 0.323468
+Clock: clock - 0.380827
+Settings:  safari - 0.836956
+Reminders: cart - 0.212780
+
+
+OTHER APPS:
+Slack: slack - 0.608549
+Airbnb: airbnb - 0.913247
+AppStore: airplane - 0.372636
+Pinterest: pinterest - 0.509440
+Twitter: twitter - 0.955779
+
+FROM MODEL:
+airplane
+alarm
+bag
+bookmark
+calculator
+calendar
+call
+camera
+car
+cart
+chart
+clock
+dollar
+facebook
+file
+folder
+gmail
+google
+headphones
+mail
+microphone
+moon
+music
+pinterest
+settings
+television
+ticket
+twitter
+video_camera

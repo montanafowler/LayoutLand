@@ -5,18 +5,47 @@ from sklearn.cluster import KMeans
 import argparse
 import os
 
+def processIdFromImageName(imageName):
+    filenameSplitArray = imageName.split(".")
+    return filenameSplitArray[0]
 
 def getImageIds(directory):
     imageIds = []
     for filename in os.listdir(directory):
-        print("filename " + filename)
         if "histagrams" in filename:
-            print("skipping histagrams folder in loop")
             continue
-        filenameSplitArray = filename.split(".")
-        imageIds.append(filenameSplitArray[0])
+        imageIds.append(processIdFromImageName(filename))
     return imageIds
 
+
+def processHistagrams(directory):
+    histagramDir = directory + "//histagrams"
+    if os.path.isdir(histagramDir) == False:
+        print("ERROR: NO HISTAGRAM directory")
+        exit(1)
+    histagramDict = {}
+    for filename in os.listdir(histagramDir):
+        histagram = cv2.imread(histagramDir + "//" + filename, cv2.IMREAD_COLOR)
+        cols = histagram.shape[1]
+        print("shape: " + str(histagram.shape))
+
+        img = cv2.cvtColor(histagram, cv2.COLOR_BGR2RGB)
+        print("img cvt color: " + str(img[0,0]))
+        colorKey = str(img[0,0][0]) + "," + str(img[0,0][1]) + "," + str(img[0,0][2])
+        print("color_key " + str(colorKey))
+        histagramColors = {}
+        for j in range(cols):
+            colorKey = str(img[0,j][0]) + "," + str(img[0,j][1]) + "," + str(img[0,j][2])
+            if (colorKey in histagramColors.keys()) == False:
+                histagramColors[colorKey] = 0
+            histagramColors[colorKey] += 1
+        print("histagramColors: " + str(histagramColors))
+
+
+
+
+def isEmpty(stack):
+    return len(stack) == 0
 
 if __name__ == "__main__":
 
@@ -26,6 +55,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.folder:
       filepath = args.folder
+      print(filepath)
 
     if filepath is None:
       print ('ERROR! Need image to run prediction on. Please add --image <path_to_file>')
@@ -38,6 +68,7 @@ if __name__ == "__main__":
 
     # get all the image imageIds
     imageIds = getImageIds(filepath)
+    print(imageIds)
 
     # fill the dictionary with all the spots & all the apps
     for r in range(3):
@@ -48,6 +79,7 @@ if __name__ == "__main__":
     popularApps = set()
 
     # go through and find the color pairs that cannot happen
+    processHistagrams(filepath)
     forbiddenPairs = {}
 
     # make a stack with good appSpots
@@ -58,8 +90,9 @@ if __name__ == "__main__":
     worstAppSpots = []
 
     #while the stacks have stuff
-    while !bestAppSpots.empty() or !mediumAppSpots.empty() or !worstAppSpots.empty():
-        if !bestAppSpots.empty():
+    while (isEmpty(bestAppSpots) and isEmpty(mediumAppSpots) and isEmpty(worstAppSpots)) == False:
+        if isEmpty(bestAppSpots) == False:
+            print("best apps not empty")
             # randomly choose a good app if there are any, else a non good one
 
             # for all the neighbors
