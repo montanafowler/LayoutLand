@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import argparse
 import os
+import random
 
 def processIdFromImageName(imageName):
     filenameSplitArray = imageName.split(".")
@@ -25,14 +26,10 @@ def appColorsAreSimilar(colorDict0, colorDict1):
             colorDifference = [int(color0[0]) - int(color1[0]), int(color0[1]) - int(color1[1]), int(color0[2]) - int(color1[2])]
             # if all three channels are withing +- 15 of each other
             if abs(colorDifference[0]) < 15 and abs(colorDifference[1]) < 15 and abs(colorDifference[2]) < 15:
-                #if abs(colorDict0[key0] - colorDict1[key1]) < 28:
-                #if (float(colorDict0[key0]) / 300.0)
                 color0Percentage = float(colorDict0[key0]) / 300.0 * 100.0
                 color1Percentage = float(colorDict1[key1]) / 300.0 * 100.0
-
+                # if the percentage difference is +-10
                 if (abs(color0Percentage - color1Percentage) < 10.0):
-                    print ("color0 percentage " + str(float(colorDict0[key0]) / 300.0))
-                    print ("color1 percentage " + str(float(colorDict1[key1]) / 300.0))
                     return True
     return False
 
@@ -102,6 +99,24 @@ def processHistagrams(directory):
 def isEmpty(stack):
     return len(stack) == 0
 
+def processClassificatons(directory):
+    classificationDict = {}
+    with open(directory + "\\classifications.txt", "r") as f:
+        txt = f.read()
+        newLineSplit = txt.split('\n')
+        print(newLineSplit)
+
+    for i in range(len(newLineSplit) - 1):
+        commaSplit = newLineSplit[i].split(',')
+        dashSplit = commaSplit[1].split(' - ')
+        if(float(dashSplit[1]) > 0.6):
+            classificationDict[commaSplit[0]] = dashSplit[0]
+        else:
+            classificationDict[commaSplit[0]] = "unknown"
+    print("____________CLASSIFICATIONS ACCESSED___________")
+    print(classificationDict)
+
+
 if __name__ == "__main__":
 
     # parse the folder with the app icons
@@ -126,7 +141,7 @@ if __name__ == "__main__":
     print(imageIds)
 
     # fill the dictionary with all the spots & all the apps
-    for r in range(3):
+    for r in range(6):
       for c in range(3):
           layoutMap[str(r) + "_" + str(c)] = imageIds #array to randomly select index
 
@@ -138,17 +153,25 @@ if __name__ == "__main__":
     print(forbiddenPairs)
 
     # make a stack with good appSpots
-    bestAppSpots = []
+    bestAppSpots = ['3_2', '3_3', '4_2', '4_3', '5_2', '5_3', '3_1', '4_1']
 
     # make a stack with rest, highest to lowest priority
-    mediumAppSpots = []
-    worstAppSpots = []
+    mediumAppSpots = ['3_0', '4_0', '5_0', '5_1', '2_0', '2_1', '2_2', '2_3', '1_3', '1_2']
+    worstAppSpots = ['1_0', '1_1', '0_0', '0_1', '0_2', '0_3']
+
+    #process classifications
+    processClassificatons(filepath)
 
     #while the stacks have stuff
     while (isEmpty(bestAppSpots) and isEmpty(mediumAppSpots) and isEmpty(worstAppSpots)) == False:
         if isEmpty(bestAppSpots) == False:
-            print("best apps not empty")
+            appSpot = bestAppSpots.pop()
+            print("appSpot: " + appSpot)
+
             # randomly choose a good app if there are any, else a non good one
+            randomIndex = int(random.random() * len(layoutMap[appSpot]))
+            print(randomIndex)
+            break
 
             # for all the neighbors
                 # remove the forbidden pairs

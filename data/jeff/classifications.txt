@@ -1,0 +1,24 @@
+A0,calendar - 0.79360723
+A1,weather - 0.39124194
+A2,bag - 0.3368057
+A3,dollar - 0.6575563
+B0,weather - 0.82702786
+B1,folder - 0.41857213
+B2,settings - 0.45490098
+B3,calculator - 0.8798601
+C0,safari - 0.88916457
+C1,music - 0.99820447
+C2,mail - 0.79806
+C3,twitter - 0.20759045
+D0,twitter - 0.9920513
+D1,twitter - 0.8225074
+D2,slack - 0.38635948
+D3,dollar - 0.45653844
+E0,video camera - 0.36354864
+E1,chart - 0.52880937
+E2,television - 0.7834688
+E3,chart - 0.18061024
+F0,television - 0.92045224
+F1,facebook - 0.5964774
+F2,slack - 0.30724224
+F3,safari - 0.915383

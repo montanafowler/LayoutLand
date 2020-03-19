@@ -120,16 +120,21 @@ def layoutLand():
         segmentedImagesFolder = segmentImage(pathToInput, imageName)
         segmentedData = {}
         segmentedDataClassifications = []
+
+        # clear the classifications file
+        with open(segmentedImagesFolder + "//classifications.txt", "w+") as classificationsFile:
+            classificationsFile.write("")
+
         for filename in os.listdir(segmentedImagesFolder):
 
+            splitFilenameToGetCode = filename.split(".")
             print("filename " + filename)
-            if "histagrams" in filename:
+            if "histagrams" in filename or "classifications" in filename:
                 print("skipping histagrams folder in loop")
                 continue
             # encode the app icon into the array
             with open(segmentedImagesFolder + "/" + filename, "rb") as image_file:
                 img = image_file.read()
-                splitFilenameToGetCode = filename.split(".")
                 segmentedData[splitFilenameToGetCode[0]] = base64.b64encode(img).decode('utf8')
 
 
@@ -138,10 +143,11 @@ def layoutLand():
             os.system("python classifier-builder-master\\run_model.py --image " + newImageFilepath)
 
             # time to read the classificationOutput
-            with open("classificationOutput.txt", "r") as f:
-                txt = f.read()
+            with open("classificationOutput.txt", "r") as currentFile, open(segmentedImagesFolder + "//classifications.txt", "a+") as classificationsFile:
+                txt = currentFile.read()
                 print("text: " + txt)
                 segmentedDataClassifications.append(txt)
+                classificationsFile.write(splitFilenameToGetCode[0] + "," + txt + "\n")
 
             # process the histagram of the app icon
             os.system("python findDominantColor.py --image " + newImageFilepath)
