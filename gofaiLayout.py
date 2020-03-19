@@ -13,7 +13,7 @@ def processIdFromImageName(imageName):
 def getImageIds(directory):
     imageIds = []
     for filename in os.listdir(directory):
-        if "histagrams" in filename:
+        if "histagrams" in filename or "classifications" in filename:
             continue
         imageIds.append(processIdFromImageName(filename))
     return imageIds
@@ -101,6 +101,7 @@ def isEmpty(stack):
 
 def processClassificatons(directory):
     classificationDict = {}
+    classificationsSet = set()
     with open(directory + "\\classifications.txt", "r") as f:
         txt = f.read()
         newLineSplit = txt.split('\n')
@@ -113,9 +114,29 @@ def processClassificatons(directory):
             classificationDict[commaSplit[0]] = dashSplit[0]
         else:
             classificationDict[commaSplit[0]] = "unknown"
-    print("____________CLASSIFICATIONS ACCESSED___________")
-    print(classificationDict)
+        classificationsSet.add(classificationDict[commaSplit[0]])
+    return [classificationDict, classificationsSet]
 
+def seedIndexArray(length):
+    arr = []
+    for i in range(length):
+        arr.append(i)
+    for i in range(length):
+        randomIndex = int(random.random() * length)
+        temp = arr[i]
+        arr[i] = arr[randomIndex]
+        arr[randomIndex] = temp
+    print("arr: " + str(arr))
+    return arr
+
+def randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps):
+    indices = seedIndexArray(len(layoutMap[appSpot]))
+    for i in range(len(indices)):
+        app = layoutMap[appSpot][indices[i]]
+        print("app is " + app)
+        if (classificationDict[app] in topApps):
+            break
+    return app
 
 if __name__ == "__main__":
 
@@ -159,23 +180,51 @@ if __name__ == "__main__":
     mediumAppSpots = ['3_0', '4_0', '5_0', '5_1', '2_0', '2_1', '2_2', '2_3', '1_3', '1_2']
     worstAppSpots = ['1_0', '1_1', '0_0', '0_1', '0_2', '0_3']
 
+    #top apps of 2019 with added default apple ones
+    topApps = set(['youtube', 'television', 'instagram', 'snapchat', 'tiktok', 'messenger', 'gmail', 'netflix', 'facebook', 'maps', 'amazon', 'spotify', 'doordash', 'whatsapp', 'faceapp', 'uber', 'yolo', 'hulu', 'venmo', 'bitmoji', 'chrome'])
+    topApps = topApps.union(set(['messages', 'mail', 'safari', 'camera', 'photos', 'phone', 'facetime', 'video camera', 'music', 'calendar', 'weather', 'podcasts', 'clock', 'settings', 'reminder']))
+
     #process classifications
-    processClassificatons(filepath)
+    classificationDictAndSet = processClassificatons(filepath)
+    classificationDict = classificationDictAndSet[0]
+    classificationsSet = classificationDictAndSet[1]
+
+    # remove top apps not detected in home screen
+    topApps = topApps.intersection(classificationsSet)
+    print("topApps " + str(topApps))
+
+    # gather the non-top apps
+    nonTopApps = classificationsSet.difference(topApps)
+    print("nonTopApps " + str(nonTopApps))
 
     #while the stacks have stuff
-    while (isEmpty(bestAppSpots) and isEmpty(mediumAppSpots) and isEmpty(worstAppSpots)) == False:
+    while isEmpty(bestAppSpots) == False: #and isEmpty(mediumAppSpots) and isEmpty(worstAppSpots)) == False:
         if isEmpty(bestAppSpots) == False:
             appSpot = bestAppSpots.pop()
+            parsedAppSpot = appSpot.split("_")
             print("appSpot: " + appSpot)
 
             # randomly choose a good app if there are any, else a non good one
-            randomIndex = int(random.random() * len(layoutMap[appSpot]))
-            print(randomIndex)
-            break
+            app = randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps)
+            print("selected app: " + app + " classified as " + classificationDict[app] + " for " + appSpot)
 
-            # for all the neighbors
+            # remove everything but the app from that slot
+
+            # if there are pairs to remove
+            if (app in forbiddenPairs.keys()):
+                appsToRemove = forbiddenPairs[app]
+                R = parsedAppSpot[0]
+                C = parsedAppSpot[1]
+                # for all the neighbors
+                for r in range(-1, 2):
+                    for c in range(-1, 2):
+                        if r != c:
+                            for a in appsToRemove:
+                                layoutMap[str(R + r) + "_" + str(C + c)].remove(a)
+                        print(str(R + r) + "_" + str(C + c) + str(layoutMap[str(R + r) + "_" + str(C + c)]))
                 # remove the forbidden pairs
                 # if we made the list empty,,,
                     # restart
                     # add one to count
                     # print restarting
+            break

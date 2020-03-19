@@ -132,11 +132,11 @@ def layoutLand():
             if "histagrams" in filename or "classifications" in filename:
                 print("skipping histagrams folder in loop")
                 continue
+
             # encode the app icon into the array
             with open(segmentedImagesFolder + "/" + filename, "rb") as image_file:
                 img = image_file.read()
                 segmentedData[splitFilenameToGetCode[0]] = base64.b64encode(img).decode('utf8')
-
 
             # classify the app icon
             newImageFilepath = segmentedImagesFolder + "/" + filename
