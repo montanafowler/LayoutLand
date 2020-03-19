@@ -25,7 +25,14 @@ def appColorsAreSimilar(colorDict0, colorDict1):
             colorDifference = [int(color0[0]) - int(color1[0]), int(color0[1]) - int(color1[1]), int(color0[2]) - int(color1[2])]
             # if all three channels are withing +- 15 of each other
             if abs(colorDifference[0]) < 15 and abs(colorDifference[1]) < 15 and abs(colorDifference[2]) < 15:
-                if abs(colorDict0[key0] - colorDict1[key1]) < 28:
+                #if abs(colorDict0[key0] - colorDict1[key1]) < 28:
+                #if (float(colorDict0[key0]) / 300.0)
+                color0Percentage = float(colorDict0[key0]) / 300.0 * 100.0
+                color1Percentage = float(colorDict1[key1]) / 300.0 * 100.0
+
+                if (abs(color0Percentage - color1Percentage) < 10.0):
+                    print ("color0 percentage " + str(float(colorDict0[key0]) / 300.0))
+                    print ("color1 percentage " + str(float(colorDict1[key1]) / 300.0))
                     return True
     return False
 
@@ -71,20 +78,26 @@ def processHistagrams(directory):
         histagramDict[processIdFromImageName(filename)] = histagramColors
 
     print("histagramDict " + str(histagramDict))
+    forbiddenPairs = {}
     count = 0
-    total = 0
     for k0 in histagramDict.keys():
         for k1 in histagramDict.keys():
             similarity = appColorsAreSimilar(histagramDict[k0], histagramDict[k1])
-            if k0 != k1:
-                total += 1
-            if(similarity):
+            if similarity:
                 if k0 != k1:
-                    count += 1
                     print(k0 + " and " + k1 + " are similar: " + str(similarity))
-    print ("percentage similar: " + str(float(count) / float(total)))
-    print(count/2)
-    print(total/2)
+                    count += 1
+                    # if the keys are not already in forbidden pairs, initialize sets
+                    if (k0 in forbiddenPairs.keys()) == False:
+                        forbiddenPairs[k0] = set()
+                    if (k1 in forbiddenPairs.keys()) == False:
+                        forbiddenPairs[k1] = set()
+
+                    # add each to the set
+                    forbiddenPairs[k0].add(k1)
+                    forbiddenPairs[k1].add(k0)
+    print ("count " + str(count/2))
+    return forbiddenPairs
 
 def isEmpty(stack):
     return len(stack) == 0
@@ -121,8 +134,8 @@ if __name__ == "__main__":
     popularApps = set()
 
     # go through and find the color pairs that cannot happen
-    processHistagrams(filepath)
-    forbiddenPairs = {}
+    forbiddenPairs = processHistagrams(filepath)
+    print(forbiddenPairs)
 
     # make a stack with good appSpots
     bestAppSpots = []
