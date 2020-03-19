@@ -6,6 +6,14 @@ import argparse
 import os
 import random
 
+def shuffleArray(arr):
+    for i in range(len(arr)):
+        randomIndex = int(random.random() * len(arr))
+        temp = arr[i]
+        arr[i] = arr[randomIndex]
+        arr[randomIndex] = temp
+    return arr
+
 def processIdFromImageName(imageName):
     filenameSplitArray = imageName.split(".")
     return filenameSplitArray[0]
@@ -74,7 +82,7 @@ def processHistagrams(directory):
         # add the dictionary to the full collection
         histagramDict[processIdFromImageName(filename)] = histagramColors
 
-    print("histagramDict " + str(histagramDict))
+    #print("histagramDict " + str(histagramDict))
     forbiddenPairs = {}
     count = 0
     for k0 in histagramDict.keys():
@@ -105,7 +113,6 @@ def processClassificatons(directory):
     with open(directory + "\\classifications.txt", "r") as f:
         txt = f.read()
         newLineSplit = txt.split('\n')
-        print(newLineSplit)
 
     for i in range(len(newLineSplit) - 1):
         commaSplit = newLineSplit[i].split(',')
@@ -121,13 +128,7 @@ def seedIndexArray(length):
     arr = []
     for i in range(length):
         arr.append(i)
-    for i in range(length):
-        randomIndex = int(random.random() * length)
-        temp = arr[i]
-        arr[i] = arr[randomIndex]
-        arr[randomIndex] = temp
-    #print("arr: " + str(arr))
-    return arr
+    return shuffleArray(arr)
 
 def randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps):
     indices = seedIndexArray(len(layoutMap[appSpot]))
@@ -137,6 +138,90 @@ def randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps):
         if (classificationDict[app] in topApps):
             break
     return app
+
+def removeAllForbiddenAppsFromNeighbors(R, C, appsToRemove, layoutMap):
+    # for all the neighbors
+    for r in range(-1, 2):
+        for c in range(-1, 2):
+            #print("\t\t\tr, c " + str(r) + ", " + str(c))
+            # only do left, right, top and bottom
+            if r != c and (R + r) > 0 and (R + r) < 6 and (C + c) > 0 and (C + c) < 4:
+                # for each app to remove
+                for a in appsToRemove:
+                    #print("\t\t\t\tapp to remove: " + a)
+                    #print("\t\t\t\tlayoutMap[" + str(R + r) + "_" + str(C + c) + "] = " + str(layoutMap[str(R + r) + "_" + str(C + c)]))
+                    # if the app is in the list, remove it
+                    if(a in layoutMap[str(R + r) + "_" + str(C + c)]):
+                        layoutMap[str(R + r) + "_" + str(C + c)].remove(a)
+                        #print("\t\t\t\t\tremoved: layoutMap[" + str(R + r) + "_" + str(C + c) + "] = " + str(layoutMap[str(R + r) + "_" + str(C + c)]))
+                        # if we made the list empty: error WE GOTTA TRY again
+                        if len(layoutMap[str(R + r) + "_" + str(C + c)]) == 0:
+                            print("WE MADE AN APP SPOT HAVE NO OPTIONS UH OH")
+                            print("layoutMap[" + str(R + r) + "_" + str(C + c) + "]")
+                            return None
+    return layoutMap
+
+def makeAppExclusiveForAppSpot(app, appSpot, layoutMap):
+    for k in layoutMap.keys():
+        #print("\tk " + str(k) + " app: " + app)
+        if k != appSpot:
+            if app in layoutMap[k]:
+                layoutMap[k].remove(app)
+                #print("\t\tremoved LayoutMap[" + str(k) + "] = " + str(layoutMap[k]))
+                if len(layoutMap[k]) == 0:
+                    print("WE MADE AN APP SPOT HAVE NO OPTIONS UH OH")
+                    print("layoutMap[" + k + "]")
+                    return None
+        else:
+            layoutMap[appSpot] = [app] #make it the only item in there
+            #print("\t\tremoved LayoutMap[" + str(k) + "] = " + str(layoutMap[k]))
+    return layoutMap
+
+def fitLayout(bestAppSpots, mediumAppSpots, worstAppSpots, classificationDict, topApps, imageIds, forbiddenPairs):
+    # shuffle arrays
+    bestAppSpots = shuffleArray(bestAppSpots)
+    mediumAppSpots = shuffleArray(mediumAppSpots)
+    worstAppSpots = shuffleArray(worstAppSpots)
+    appSpots = worstAppSpots + mediumAppSpots + bestAppSpots # combine lists once they have been shuffled
+    #print ("APP SPOTS: " + str(appSpots))
+
+    # fill the dictionary with all the spots & all the apps
+    # dictionary with lists of the apps in the layout locations
+    layoutMap = {}
+    for r in range(6):
+      for c in range(4):
+          layoutMap[str(r) + "_" + str(c)] = imageIds.copy() #array to randomly select index
+
+    #while the stacks have stuff
+    while isEmpty(appSpots) == False: #and isEmpty(mediumAppSpots) and isEmpty(worstAppSpots)) == False:
+        if isEmpty(appSpots) == False:
+            appSpot = appSpots.pop()
+            parsedAppSpot = appSpot.split("_")
+            #print("appSpot: " + appSpot)
+
+            # randomly choose a good app if there are any, else a non good one
+            app = randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps)
+            #print("\tselected app: " + app + " classified as " + classificationDict[app] + " for " + appSpot)
+
+            # remove everything but the app from that slot
+            #print("\tapp in forbiddenPairs: " + str(app in forbiddenPairs.keys()))
+            # if there are pairs to remove
+            if (app in forbiddenPairs.keys()):
+                appsToRemove = forbiddenPairs[app]
+                R = int(parsedAppSpot[0])
+                C = int(parsedAppSpot[1])
+                #print("\t\t" + app + " in forbidden pairs for " + str(appsToRemove))
+
+                # remove forbidden pairs from all the neighbors
+                layoutMap = removeAllForbiddenAppsFromNeighbors(R, C, appsToRemove, layoutMap)
+                if layoutMap == None:
+                    return None
+
+            # remove the app from every other list and clear list except for app
+            layoutMap = makeAppExclusiveForAppSpot(app, appSpot, layoutMap)
+            if layoutMap == None:
+                return None
+    return layoutMap
 
 if __name__ == "__main__":
 
@@ -154,17 +239,8 @@ if __name__ == "__main__":
 
 
 
-    # dictionary with lists of the apps in the layout locations
-    layoutMap = {}
-
     # get all the image imageIds
     imageIds = getImageIds(filepath)
-    #print(imageIds)
-
-    # fill the dictionary with all the spots & all the apps
-    for r in range(6):
-      for c in range(3):
-          layoutMap[str(r) + "_" + str(c)] = imageIds.copy() #array to randomly select index
 
     # make a list of the popular apps that were detected, put rest in unidentified box
     popularApps = set()
@@ -172,13 +248,6 @@ if __name__ == "__main__":
     # go through and find the color pairs that cannot happen
     forbiddenPairs = processHistagrams(filepath)
     #print(forbiddenPairs)
-
-    # make a stack with good appSpots
-    bestAppSpots = ['3_2', '3_3', '4_2', '4_3', '5_2', '5_3', '3_1', '4_1']
-
-    # make a stack with rest, highest to lowest priority
-    mediumAppSpots = ['3_0', '4_0', '5_0', '5_1', '2_0', '2_1', '2_2', '2_3', '1_3', '1_2']
-    worstAppSpots = ['1_0', '1_1', '0_0', '0_1', '0_2', '0_3']
 
     #top apps of 2019 with added default apple ones
     topApps = set(['youtube', 'television', 'instagram', 'snapchat', 'tiktok', 'messenger', 'gmail', 'netflix', 'facebook', 'maps', 'amazon', 'spotify', 'doordash', 'whatsapp', 'faceapp', 'uber', 'yolo', 'hulu', 'venmo', 'bitmoji', 'chrome'])
@@ -197,40 +266,15 @@ if __name__ == "__main__":
     nonTopApps = classificationsSet.difference(topApps)
     print("nonTopApps " + str(nonTopApps))
 
-    #while the stacks have stuff
-    while isEmpty(bestAppSpots) == False: #and isEmpty(mediumAppSpots) and isEmpty(worstAppSpots)) == False:
-        if isEmpty(bestAppSpots) == False:
-            appSpot = bestAppSpots.pop()
-            parsedAppSpot = appSpot.split("_")
-            print("appSpot: " + appSpot)
+    # make a stack with good appSpots
+    bestAppSpots = ['3_2', '3_3', '4_2', '4_3', '5_2', '5_3', '3_1', '4_1']
+    mediumAppSpots = ['3_0', '4_0', '5_0', '5_1', '2_0', '2_1', '2_2', '2_3', '1_3', '1_2']
+    worstAppSpots = ['1_0', '1_1', '0_0', '0_1', '0_2', '0_3']
 
-            # randomly choose a good app if there are any, else a non good one
-            app = randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps)
-            print("\tselected app: " + app + " classified as " + classificationDict[app] + " for " + appSpot)
-
-            # remove everything but the app from that slot
-            print("\tforbiddenPairs: " + str(forbiddenPairs.keys()))
-            # if there are pairs to remove
-            if (app in forbiddenPairs.keys()):
-                appsToRemove = forbiddenPairs[app]
-                R = int(parsedAppSpot[0])
-                C = int(parsedAppSpot[1])
-                print("\t\t" + app + " in forbidden pairs for " + str(appsToRemove))
-                # for all the neighbors
-                for r in range(-1, 2):
-                    for c in range(-1, 2):
-                        print("\t\t\tr, c " + str(r) + ", " + str(c))
-                        if r != c:
-                            for a in appsToRemove:
-                                print("\t\t\t\tapp to remove: " + a)
-                                print("\t\t\t\tlayoutMap[" + str(R + r) + "_" + str(C + c) + "] = " + str(layoutMap[str(R + r) + "_" + str(C + c)]))
-                                if(a in layoutMap[str(R + r) + "_" + str(C + c)]):
-                                    layoutMap[str(R + r) + "_" + str(C + c)].remove(a)
-                                    print("\t\t\t\t\tremoved: layoutMap[" + str(R + r) + "_" + str(C + c) + "] = " + str(layoutMap[str(R + r) + "_" + str(C + c)]))
-                        #print(str(R + r) + "_" + str(C + c) + str(layoutMap[str(R + r) + "_" + str(C + c)]))
-                # remove the forbidden pairs
-                # if we made the list empty,,,
-                    # restart
-                    # add one to count
-                    # print restarting
+    for i in range(20):
+        layoutMap = fitLayout(bestAppSpots, mediumAppSpots, worstAppSpots, classificationDict, topApps, imageIds, forbiddenPairs)
+        if layoutMap != None:
+            print ("try #" + str(i))
             break
+
+    print("FINAL LAYOUTMAP: " + str(layoutMap))
