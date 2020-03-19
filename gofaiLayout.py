@@ -41,7 +41,7 @@ def cleanUpHistagramColorDictionary(histagramColors):
             entriesToDelete.append(key)
     for entry in entriesToDelete:
         histagramColors.pop(entry)
-    print("histagramColors cleaned up: " + str(histagramColors))
+    #print("histagramColors cleaned up: " + str(histagramColors))
     return histagramColors
 
 def fillHistagramColorDictionary(cols, histagram):
@@ -82,7 +82,7 @@ def processHistagrams(directory):
             similarity = appColorsAreSimilar(histagramDict[k0], histagramDict[k1])
             if similarity:
                 if k0 != k1:
-                    print(k0 + " and " + k1 + " are similar: " + str(similarity))
+                    #print(k0 + " and " + k1 + " are similar: " + str(similarity))
                     count += 1
                     # if the keys are not already in forbidden pairs, initialize sets
                     if (k0 in forbiddenPairs.keys()) == False:
@@ -93,7 +93,7 @@ def processHistagrams(directory):
                     # add each to the set
                     forbiddenPairs[k0].add(k1)
                     forbiddenPairs[k1].add(k0)
-    print ("count " + str(count/2))
+    #print ("count " + str(count/2))
     return forbiddenPairs
 
 def isEmpty(stack):
@@ -126,14 +126,14 @@ def seedIndexArray(length):
         temp = arr[i]
         arr[i] = arr[randomIndex]
         arr[randomIndex] = temp
-    print("arr: " + str(arr))
+    #print("arr: " + str(arr))
     return arr
 
 def randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps):
     indices = seedIndexArray(len(layoutMap[appSpot]))
     for i in range(len(indices)):
         app = layoutMap[appSpot][indices[i]]
-        print("app is " + app)
+        #print("app is " + app)
         if (classificationDict[app] in topApps):
             break
     return app
@@ -159,19 +159,19 @@ if __name__ == "__main__":
 
     # get all the image imageIds
     imageIds = getImageIds(filepath)
-    print(imageIds)
+    #print(imageIds)
 
     # fill the dictionary with all the spots & all the apps
     for r in range(6):
       for c in range(3):
-          layoutMap[str(r) + "_" + str(c)] = imageIds #array to randomly select index
+          layoutMap[str(r) + "_" + str(c)] = imageIds.copy() #array to randomly select index
 
     # make a list of the popular apps that were detected, put rest in unidentified box
     popularApps = set()
 
     # go through and find the color pairs that cannot happen
     forbiddenPairs = processHistagrams(filepath)
-    print(forbiddenPairs)
+    #print(forbiddenPairs)
 
     # make a stack with good appSpots
     bestAppSpots = ['3_2', '3_3', '4_2', '4_3', '5_2', '5_3', '3_1', '4_1']
@@ -206,22 +206,28 @@ if __name__ == "__main__":
 
             # randomly choose a good app if there are any, else a non good one
             app = randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps)
-            print("selected app: " + app + " classified as " + classificationDict[app] + " for " + appSpot)
+            print("\tselected app: " + app + " classified as " + classificationDict[app] + " for " + appSpot)
 
             # remove everything but the app from that slot
-
+            print("\tforbiddenPairs: " + str(forbiddenPairs.keys()))
             # if there are pairs to remove
             if (app in forbiddenPairs.keys()):
                 appsToRemove = forbiddenPairs[app]
-                R = parsedAppSpot[0]
-                C = parsedAppSpot[1]
+                R = int(parsedAppSpot[0])
+                C = int(parsedAppSpot[1])
+                print("\t\t" + app + " in forbidden pairs for " + str(appsToRemove))
                 # for all the neighbors
                 for r in range(-1, 2):
                     for c in range(-1, 2):
+                        print("\t\t\tr, c " + str(r) + ", " + str(c))
                         if r != c:
                             for a in appsToRemove:
-                                layoutMap[str(R + r) + "_" + str(C + c)].remove(a)
-                        print(str(R + r) + "_" + str(C + c) + str(layoutMap[str(R + r) + "_" + str(C + c)]))
+                                print("\t\t\t\tapp to remove: " + a)
+                                print("\t\t\t\tlayoutMap[" + str(R + r) + "_" + str(C + c) + "] = " + str(layoutMap[str(R + r) + "_" + str(C + c)]))
+                                if(a in layoutMap[str(R + r) + "_" + str(C + c)]):
+                                    layoutMap[str(R + r) + "_" + str(C + c)].remove(a)
+                                    print("\t\t\t\t\tremoved: layoutMap[" + str(R + r) + "_" + str(C + c) + "] = " + str(layoutMap[str(R + r) + "_" + str(C + c)]))
+                        #print(str(R + r) + "_" + str(C + c) + str(layoutMap[str(R + r) + "_" + str(C + c)]))
                 # remove the forbidden pairs
                 # if we made the list empty,,,
                     # restart
