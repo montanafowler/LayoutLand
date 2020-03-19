@@ -129,8 +129,7 @@ def layoutLand():
 
             splitFilenameToGetCode = filename.split(".")
             print("filename " + filename)
-            if "histagrams" in filename or "classifications" in filename:
-                print("skipping histagrams folder in loop")
+            if "histagrams" in filename or "classifications" in filename or "layout" in filename:
                 continue
 
             # encode the app icon into the array
@@ -155,9 +154,16 @@ def layoutLand():
         with open(pathToInput, "rb") as image_file:
             img = image_file.read()
             inputData = base64.b64encode(img)
+
+        os.system("python gofaiLayout.py --folder " + segmentedImagesFolder)
+        jsonSolution = "{}"
+        with open(segmentedImagesFolder + "\\layout.txt", "r") as layoutFile:
+            jsonSolution = layoutFile.read()
     else:
         print("File not found!")
         return render_template("index.html", segmentedData={})
+
+
 
     if (phoneType == IPHONE7 or phoneType == IPHONEX or phoneType == IPHONEXS_MAX):
         rows = 6.0
@@ -171,4 +177,4 @@ def layoutLand():
     for i in range(int(rows) * int(cols)):
         spotCountArray.append(appSpotSize)
     print(spotCountArray)
-    return render_template("index.html", text="temp text", segmentedData=segmentedData, segmentedDataClassifications=segmentedDataClassifications, inputData=inputData.decode('utf8'), rows=rows, cols=cols)
+    return render_template("index.html", text="temp text", segmentedData=segmentedData, segmentedDataClassifications=segmentedDataClassifications, inputData=inputData.decode('utf8'), rows=rows, cols=cols, solution=jsonSolution)

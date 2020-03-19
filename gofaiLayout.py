@@ -5,6 +5,7 @@ from sklearn.cluster import KMeans
 import argparse
 import os
 import random
+import json
 
 def shuffleArray(arr):
     for i in range(len(arr)):
@@ -21,7 +22,7 @@ def processIdFromImageName(imageName):
 def getImageIds(directory):
     imageIds = []
     for filename in os.listdir(directory):
-        if "histagrams" in filename or "classifications" in filename:
+        if "histagrams" in filename or "classifications" in filename or "layout" in filename:
             continue
         imageIds.append(processIdFromImageName(filename))
     return imageIds
@@ -40,7 +41,6 @@ def appColorsAreSimilar(colorDict0, colorDict1):
                 if (abs(color0Percentage - color1Percentage) < 10.0):
                     return True
     return False
-
 
 def cleanUpHistagramColorDictionary(histagramColors):
     entriesToDelete = []
@@ -157,7 +157,6 @@ def removeAllForbiddenAppsFromNeighbors(R, C, appsToRemove, layoutMap):
                         # if we made the list empty: error WE GOTTA TRY again
                         if len(layoutMap[str(R + r) + "_" + str(C + c)]) == 0:
                             print("WE MADE AN APP SPOT HAVE NO OPTIONS UH OH")
-                            print("layoutMap[" + str(R + r) + "_" + str(C + c) + "]")
                             return None
     return layoutMap
 
@@ -170,8 +169,7 @@ def makeAppExclusiveForAppSpot(app, appSpot, layoutMap):
                 #print("\t\tremoved LayoutMap[" + str(k) + "] = " + str(layoutMap[k]))
                 if len(layoutMap[k]) == 0:
                     print("WE MADE AN APP SPOT HAVE NO OPTIONS UH OH")
-                    print("layoutMap[" + k + "]")
-                    return None
+                    return None # trigger failed try
         else:
             layoutMap[appSpot] = [app] #make it the only item in there
             #print("\t\tremoved LayoutMap[" + str(k) + "] = " + str(layoutMap[k]))
@@ -183,7 +181,6 @@ def fitLayout(bestAppSpots, mediumAppSpots, worstAppSpots, classificationDict, t
     mediumAppSpots = shuffleArray(mediumAppSpots)
     worstAppSpots = shuffleArray(worstAppSpots)
     appSpots = worstAppSpots + mediumAppSpots + bestAppSpots # combine lists once they have been shuffled
-    #print ("APP SPOTS: " + str(appSpots))
 
     # fill the dictionary with all the spots & all the apps
     # dictionary with lists of the apps in the layout locations
@@ -203,7 +200,6 @@ def fitLayout(bestAppSpots, mediumAppSpots, worstAppSpots, classificationDict, t
             app = randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps)
             #print("\tselected app: " + app + " classified as " + classificationDict[app] + " for " + appSpot)
 
-            # remove everything but the app from that slot
             #print("\tapp in forbiddenPairs: " + str(app in forbiddenPairs.keys()))
             # if there are pairs to remove
             if (app in forbiddenPairs.keys()):
@@ -215,12 +211,12 @@ def fitLayout(bestAppSpots, mediumAppSpots, worstAppSpots, classificationDict, t
                 # remove forbidden pairs from all the neighbors
                 layoutMap = removeAllForbiddenAppsFromNeighbors(R, C, appsToRemove, layoutMap)
                 if layoutMap == None:
-                    return None
+                    return None # failed try trigger
 
             # remove the app from every other list and clear list except for app
             layoutMap = makeAppExclusiveForAppSpot(app, appSpot, layoutMap)
             if layoutMap == None:
-                return None
+                return None # failed try trigger
     return layoutMap
 
 if __name__ == "__main__":
@@ -236,8 +232,6 @@ if __name__ == "__main__":
     if filepath is None:
       print ('ERROR! Need image to run prediction on. Please add --image <path_to_file>')
       exit(1)
-
-
 
     # get all the image imageIds
     imageIds = getImageIds(filepath)
@@ -278,3 +272,5 @@ if __name__ == "__main__":
             break
 
     print("FINAL LAYOUTMAP: " + str(layoutMap))
+    with open(filepath + "\\layout.txt", "w+") as layoutFile:
+        layoutFile.write(json.dumps(layoutMap))

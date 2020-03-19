@@ -103,7 +103,7 @@
 
         <div id="layoutGame" class="imageDiv">
           <h4> 4. Drag your apps into the optimal layout arrangement. </h4>
-
+          <button id="submitSolutionButton" onclick="scoreLayout()">Submit Layout</button>
           <script>
 
 
@@ -130,6 +130,7 @@
                 }
                 layoutGameDiv.appendChild(div);
                 count += 1;
+              
               }
             }
 
@@ -169,7 +170,13 @@
               console.log("appIconId: " + appIconId);
               console.log("ev.target.id " + ev.target.id);
             }
+
+            function scoreLayout() {
+              console.log("scoreLayout");
+            }
           </script>
+          <p value="{{solution}}"/>
+
         </div>
     </div>
 </body>
