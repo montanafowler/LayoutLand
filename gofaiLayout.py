@@ -22,7 +22,7 @@ def processIdFromImageName(imageName):
 def getImageIds(directory):
     imageIds = []
     for filename in os.listdir(directory):
-        if "histagrams" in filename or "classifications" in filename or "layout" in filename:
+        if "histagrams" in filename or "classifications" in filename or "layout" in filename or "forbidden" in filename:
             continue
         imageIds.append(processIdFromImageName(filename))
     return imageIds
@@ -274,3 +274,6 @@ if __name__ == "__main__":
     print("FINAL LAYOUTMAP: " + str(layoutMap))
     with open(filepath + "\\layout.txt", "w+") as layoutFile:
         layoutFile.write(json.dumps(layoutMap))
+
+    with open(filepath + "\\forbiddenPairs.txt", "w+") as forbiddenPairsFile:
+        forbiddenPairsFile.write(json.dumps(forbiddenPairs))

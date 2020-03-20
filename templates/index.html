@@ -15,7 +15,7 @@
             vertical-align: top;
         }
 
-        #row {
+        .row {
             width: 100%;
         }
 
@@ -69,6 +69,10 @@
   padding: 10px;
   border: 1px solid #aaaaaa;
 }
+
+.header {
+  display: inline-block;
+}
     </style>
 
 
@@ -83,12 +87,13 @@
         <input type="submit">
     </form>
 
-    <div id="row">
+    <div class="row">
 
 
         <div id="inputImg" class="imageDivOriginal">
             <h4>2. Input Image</h4>
             <img id="originalImage" src="data:image/jpg;base64,{{inputData}}" />
+            <p value="{{solution}}"/>
         </div>
 
         <div id="segmentedImg" class="imageDiv">
@@ -96,88 +101,115 @@
             {% for id,encodedImg in segmentedData.items() %}
               <img class="appImg" id="{{id}}" draggable="true" ondragstart="drag(event)" src="data:image/jpg;base64,{{encodedImg}}" />
             {% endfor %}
-            {% for text in segmentedDataClassifications %}
-              <p value="{{ text }}">{{ text }}</p>
-            {% endfor %}
         </div>
 
         <div id="layoutGame" class="imageDiv">
-          <h4> 4. Drag your apps into the optimal layout arrangement. </h4>
-          <button id="submitSolutionButton" onclick="scoreLayout()">Submit Layout</button>
-          <script>
+          <div class="row">
+            <h4 class="header"> 4. Drag your apps into the optimal layout arrangement. </h4>
+            <button class="header" id="submitSolutionButton" onclick="scoreLayout()" style="margin: 5px;">Submit Layout</button>
+          </div>
 
 
-            var layoutGameDiv = document.getElementById("layoutGame");
-            let size = layoutGameDiv.offsetWidth / parseFloat('{{cols}}') - 5.0;
-            console.log("layoutGameDiv.width " + layoutGameDiv.offsetWidth)
-            console.log("size " + size.toString());
-            var count = 0;
-            for (let r = 0; r < parseInt('{{rows}}'); r++) {
-              for (let c = 0; c < parseInt('{{cols}}'); c++) {
-                sizeString = size.toString() + "px;";
-                let div = document.createElement('div');
-                div.className = "appSpot";
-                div.id = r.toString() + '_' + c.toString();
-
-                div.setAttribute("ondrop", "drop(event)");
-                div.setAttribute("ondragover", "allowDrop(event)");
-
-
-                if((r + c)%2 != 0) {
-                  div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #BCF1E8;';
-                } else {
-                  div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #D3D3D3;';
-                }
-                layoutGameDiv.appendChild(div);
-                count += 1;
-              
-              }
-            }
-
-            function allowDrop(ev) {
-              ev.preventDefault();
-            }
-
-            function drag(ev) {
-              ev.dataTransfer.setData("appIconId", ev.target.id);
-            }
-
-            function drop(ev, divId) {
-              ev.preventDefault();
-              // get the app we are moving
-              var appIconId = ev.dataTransfer.getData("appIconId");
-              var originalAppIcon = document.getElementById(appIconId);
-
-              // get the div of the app spot
-              var appSpot = document.getElementById(ev.target.id);
-
-              // if it is a drag and drop from an icon that was originally on the left
-              if(!appIconId.includes("cloned")) {
-                // clone it
-                var clonedAppIcon = originalAppIcon.cloneNode(true);
-                clonedAppIcon.id = appIconId + "_cloned";
-                clonedAppIcon.setAttribute("style", "width: 90%; height: auto; margin-left: auto; margin-right: auto;");
-                appSpot.appendChild(clonedAppIcon);
-
-                //now modify the original
-                originalAppIcon.setAttribute("style", "opacity: 30%;"); //grey out
-                originalAppIcon.setAttribute("draggable", "false"); //make it not draggable anymore
-                originalAppIcon.setAttribute("dragstart", "");
-              } else {
-                // it is a cloned app, so don't clone it again, just drag it
-                appSpot.appendChild(originalAppIcon);
-              }
-              console.log("appIconId: " + appIconId);
-              console.log("ev.target.id " + ev.target.id);
-            }
-
-            function scoreLayout() {
-              console.log("scoreLayout");
-            }
-          </script>
-          <p value="{{solution}}"/>
 
         </div>
+        <div id="layoutSolution" class="imageDiv">
+          <div class="row">
+            <h4 class="header"> 5. Receive a score of your layout based on our solution. </h4>
+            <h5 class="header" id="score" style="margin: 5px; font-color: blue;">Score: ___</h5>
+          </div>
+        </div>
     </div>
+
+    <script>
+
+
+      var layoutGameDiv = document.getElementById("layoutGame");
+      let size = layoutGameDiv.offsetWidth / parseFloat('{{cols}}') - 5.0;
+      console.log("layoutGameDiv.width " + layoutGameDiv.offsetWidth)
+      console.log("size " + size.toString());
+      var count = 0;
+      for (let r = 0; r < parseInt('{{rows}}'); r++) {
+        for (let c = 0; c < parseInt('{{cols}}'); c++) {
+          sizeString = size.toString() + "px;";
+          let div = document.createElement('div');
+          div.className = "appSpot";
+          div.id = r.toString() + '_' + c.toString();
+          div.setAttribute("ondrop", "drop(event)");
+          div.setAttribute("ondragover", "allowDrop(event)");
+
+          let solutionDiv = document.createElement('div');
+          solutionDiv.className = "appSpot";
+          solutionDiv.id = r.toString() + '_' + c.toString() + "_solution";
+          solutionDiv.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #E8E8E8;';
+          document.getElementById('layoutSolution').appendChild(solutionDiv);
+
+
+          if((r + c)%2 != 0) {
+            div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #BCF1E8;';
+          } else {
+            div.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #D3D3D3;';
+          }
+          layoutGameDiv.appendChild(div);
+          count += 1;
+
+        }
+      }
+
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+
+      function drag(ev) {
+        ev.dataTransfer.setData("appIconId", ev.target.id);
+      }
+
+      function drop(ev, divId) {
+        ev.preventDefault();
+        // get the app we are moving
+        var appIconId = ev.dataTransfer.getData("appIconId");
+        var originalAppIcon = document.getElementById(appIconId);
+
+        // get the div of the app spot
+        var appSpot = document.getElementById(ev.target.id);
+
+        // if it is a drag and drop from an icon that was originally on the left
+        if(!appIconId.includes("cloned")) {
+          // clone it
+          var clonedAppIcon = originalAppIcon.cloneNode(true);
+          clonedAppIcon.id = appIconId + "_cloned";
+          clonedAppIcon.setAttribute("style", "width: 90%; height: auto; margin-left: auto; margin-right: auto;");
+          appSpot.appendChild(clonedAppIcon);
+
+          //now modify the original
+          originalAppIcon.setAttribute("style", "opacity: 30%;"); //grey out
+          originalAppIcon.setAttribute("draggable", "false"); //make it not draggable anymore
+          originalAppIcon.setAttribute("dragstart", "");
+        } else {
+          // it is a cloned app, so don't clone it again, just drag it
+          appSpot.appendChild(originalAppIcon);
+        }
+        console.log("appIconId: " + appIconId);
+        console.log("ev.target.id " + ev.target.id);
+      }
+
+      function scoreLayout() {
+        console.log("scoreLayout");
+        var layoutGameChildren = document.getElementById('layoutGame').children;
+        var appSpotDictionary = {};
+        var appSpotChildren;
+        for(var i = 0; i < layoutGameChildren.length; i++) {
+          console.log(layoutGameChildren[i]);
+          var c = layoutGameChildren[i].getAttribute("class");
+          console.log(c);
+          if (c == "appSpot") {
+            appSpotChildren = layoutGameChildren[i].children;
+            if (appSpotChildren.length > 0) {
+              appSpotDictionary[layoutGameChildren[i].getAttribute("id")] = appSpotChildren[0].getAttribute("id");
+            }
+          }
+        }
+
+      }
+    </script>
 </body>
 </html>

@@ -129,7 +129,7 @@ def layoutLand():
 
             splitFilenameToGetCode = filename.split(".")
             print("filename " + filename)
-            if "histagrams" in filename or "classifications" in filename or "layout" in filename:
+            if "histagrams" in filename or "classifications" in filename or "layout" in filename or "forbidden" in filename:
                 continue
 
             # encode the app icon into the array
@@ -159,6 +159,9 @@ def layoutLand():
         jsonSolution = "{}"
         with open(segmentedImagesFolder + "\\layout.txt", "r") as layoutFile:
             jsonSolution = layoutFile.read()
+        jsonForbiddenPairs = "{}"
+        with open(segmentedImagesFolder + "\\forbiddenPairs.txt", "r") as forbiddenPairsFile:
+            jsonForbiddenPairs = forbiddenPairsFile.read()
     else:
         print("File not found!")
         return render_template("index.html", segmentedData={})
@@ -177,4 +180,4 @@ def layoutLand():
     for i in range(int(rows) * int(cols)):
         spotCountArray.append(appSpotSize)
     print(spotCountArray)
-    return render_template("index.html", text="temp text", segmentedData=segmentedData, segmentedDataClassifications=segmentedDataClassifications, inputData=inputData.decode('utf8'), rows=rows, cols=cols, solution=jsonSolution)
+    return render_template("index.html", text="temp text", segmentedData=segmentedData, segmentedDataClassifications=segmentedDataClassifications, inputData=inputData.decode('utf8'), rows=rows, cols=cols, solution=jsonSolution, forbiddenPairs=jsonForbiddenPairs)
