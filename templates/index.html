@@ -93,7 +93,7 @@
         <div id="inputImg" class="imageDivOriginal">
             <h4>2. Input Image</h4>
             <img id="originalImage" src="data:image/jpg;base64,{{inputData}}" />
-            <p value="{{solution}}"/>
+            <p id="hiddenSolution" value="{{solution}}"/>
         </div>
 
         <div id="segmentedImg" class="imageDiv">
@@ -115,7 +115,7 @@
         <div id="layoutSolution" class="imageDiv">
           <div class="row">
             <h4 class="header"> 5. Receive a score of your layout based on our solution. </h4>
-            <h5 class="header" id="score" style="margin: 5px; font-color: blue;">Score: ___</h5>
+            <h5 class="header" id="score" style="margin: 5px; font-color: blue;">Score:</h5>
           </div>
         </div>
     </div>
@@ -140,7 +140,16 @@
           let solutionDiv = document.createElement('div');
           solutionDiv.className = "appSpot";
           solutionDiv.id = r.toString() + '_' + c.toString() + "_solution";
-          solutionDiv.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: #E8E8E8;';
+          var bestAppSpots = ['3_2', '3_3', '4_2', '4_3', '5_2', '5_3', '3_1', '4_1'];
+          var mediumAppSpots = ['3_0', '4_0', '5_0', '5_1', '2_0', '2_1', '2_2', '2_3', '1_3', '1_2'];
+          var worstAppSpots = ['1_0', '1_1', '0_0', '0_1', '0_2', '0_3'];
+          var color = "#ffcccb";
+          if (bestAppSpots.includes(r.toString() + '_' + c.toString())) {
+            color = "#90EE90";
+          } else if (mediumAppSpots.includes(r.toString() + '_' + c.toString())) {
+            color = "#FFFF99";
+          }
+          solutionDiv.style = 'width: ' + sizeString + 'height: ' + sizeString + 'background-color: ' + color + ';';
           document.getElementById('layoutSolution').appendChild(solutionDiv);
 
 
@@ -156,7 +165,10 @@
       }
 
       function allowDrop(ev) {
-        ev.preventDefault();
+        if (document.getElementById(ev.target.id).children.length == 0) {
+          console.log("prevent drop of ", ev.target.id);
+          ev.preventDefault();
+        }
       }
 
       function drag(ev) {
@@ -164,6 +176,7 @@
       }
 
       function drop(ev, divId) {
+        var appSpotChildren = document.getElementById(ev.target.id).children;
         ev.preventDefault();
         // get the app we are moving
         var appIconId = ev.dataTransfer.getData("appIconId");
@@ -171,9 +184,12 @@
 
         // get the div of the app spot
         var appSpot = document.getElementById(ev.target.id);
+        //console.log("appspot.children.length", appSpot.childNodes.length);
+        var appSpotChildren = document.getElementById(ev.target.id).children;
+        //console.log(appSpotChildren.length);
 
         // if it is a drag and drop from an icon that was originally on the left
-        if(!appIconId.includes("cloned")) {
+        if(!appIconId.includes("cloned") && (appSpotChildren.length == 0)) {
           // clone it
           var clonedAppIcon = originalAppIcon.cloneNode(true);
           clonedAppIcon.id = appIconId + "_cloned";
@@ -184,31 +200,100 @@
           originalAppIcon.setAttribute("style", "opacity: 30%;"); //grey out
           originalAppIcon.setAttribute("draggable", "false"); //make it not draggable anymore
           originalAppIcon.setAttribute("dragstart", "");
-        } else {
+        } else if (appSpot.children.length == 0){
           // it is a cloned app, so don't clone it again, just drag it
           appSpot.appendChild(originalAppIcon);
         }
-        console.log("appIconId: " + appIconId);
-        console.log("ev.target.id " + ev.target.id);
+        //console.log("appIconId: " + appIconId);
+        //console.log("ev.target.id " + ev.target.id);
       }
 
       function scoreLayout() {
-        console.log("scoreLayout");
         var layoutGameChildren = document.getElementById('layoutGame').children;
         var appSpotDictionary = {};
-        var appSpotChildren;
+        var appSpotChildren, appIconId;
+
+        // for every child in the layout game div...
         for(var i = 0; i < layoutGameChildren.length; i++) {
-          console.log(layoutGameChildren[i]);
+          //console.log(layoutGameChildren[i]);
           var c = layoutGameChildren[i].getAttribute("class");
-          console.log(c);
+          //console.log(c);
+          // if the app spots are there! loop through them to build dictionary
           if (c == "appSpot") {
             appSpotChildren = layoutGameChildren[i].children;
+            // if the app spot has a child: record it
             if (appSpotChildren.length > 0) {
-              appSpotDictionary[layoutGameChildren[i].getAttribute("id")] = appSpotChildren[0].getAttribute("id");
+              appIconId = appSpotChildren[0].getAttribute("id").replace("_cloned", "");
+              appSpotDictionary[layoutGameChildren[i].getAttribute("id")] = appIconId;
+              //console.log("appIconId: " + appIconId);
+            } else {
+              // app spot is empty... totally fine, we don't want anything to break if they don't fill everything in
+              appSpotDictionary[layoutGameChildren[i].getAttribute("id")] = "";
             }
           }
         }
+        // prepare solution for calculations
+        var text = document.getElementById('hiddenSolution').getAttribute("value");
+        //console.log(text);
+        var solutionDictionary = JSON.parse(text); // this will convert your json string to a javascript object
+        var bestAppSpots = ['3_2', '3_3', '4_2', '4_3', '5_2', '5_3', '3_1', '4_1'];
+        var mediumAppSpots = ['3_0', '4_0', '5_0', '5_1', '2_0', '2_1', '2_2', '2_3', '1_3', '1_2'];
+        var worstAppSpots = ['1_0', '1_1', '0_0', '0_1', '0_2', '0_3'];
+        var spots = [];
+        var score = 0;
 
+        // now we score the layout based on their dictionary and our json solution + forbidden pairs
+        for (var appSpotIdUser in appSpotDictionary) {
+            // check if the property/key is defined in the object itself, not in parent
+            if (appSpotDictionary.hasOwnProperty(appSpotIdUser)) {
+                //console.log(appSpotIdUser, appSpotDictionary[appSpotIdUser]);
+                console.log("\tappSpotDictionary.hasOwnProperty(appSpotIdUser) ", appSpotDictionary.hasOwnProperty(appSpotIdUser));
+                console.log("\tbestAppSpots.includes(appSpotIdUser) ", bestAppSpots.includes(appSpotIdUser));
+                console.log("\tmediumAppSpots.includes(appSpotIdUser) ", mediumAppSpots.includes(appSpotIdUser));
+
+                // determine what type of spot it is
+                if (bestAppSpots.includes(appSpotIdUser)) {
+                  spots = bestAppSpots;
+                } else if (mediumAppSpots.includes(appSpotIdUser)) {
+                  spots = mediumAppSpots;
+                } else {
+                  spots = worstAppSpots;
+                }
+                //console.log("spots", spots);
+                // loop through spots to see if the app the user chose is included in this section for the solution
+                for (var spot in spots) {
+                  console.log("\t\tspots ", spots);
+                  console.log("\t\tspots[spot] ", spots[spot]);
+                  console.log("\t\tspot ", spot);
+                  console.log("\t\tsolutionDictionary.hasOwnProperty(spot) ", solutionDictionary.hasOwnProperty(spots[spot]));
+                  if (solutionDictionary.hasOwnProperty(spots[spot])) {
+                    console.log("\t\t\tappSpotIdUser", appSpotIdUser);
+                    console.log("\t\t\tsolutionDictionary[spot]", solutionDictionary[spots[spot]]);
+                    console.log("\t\t\tappSpotDictionary[appSpotIdUser]", appSpotDictionary[appSpotIdUser]);
+                    // we found a match in the same category as the solution
+                    if (solutionDictionary[spots[spot]] == appSpotDictionary[appSpotIdUser]) {
+                      score += 1; // they get a point
+                      break;
+                    }
+                  }
+                }
+            }
+        }
+        console.log("SCORE: ", score);
+        document.getElementById('score').innerText = 'Score: ' + score.toString();
+
+        for (let r = 0; r < parseInt('{{rows}}'); r++) {
+          for (let c = 0; c < parseInt('{{cols}}'); c++) {
+            var solutionDiv = document.getElementById(r.toString() + '_' + c.toString() + "_solution");
+            var originalAppIcon = document.getElementById(solutionDictionary[r.toString() + '_' + c.toString()]);
+            var clonedAppIcon = originalAppIcon.cloneNode(true);
+            clonedAppIcon.id = appIconId + "_cloned_solution";
+            clonedAppIcon.setAttribute("style", "width: 90%; height: auto; margin-left: auto; margin-right: auto;");
+            clonedAppIcon.setAttribute("draggable", "false"); //make it not draggable anymore
+            clonedAppIcon.setAttribute("dragstart", "");
+            solutionDiv.appendChild(clonedAppIcon);
+          }
+        }
       }
     </script>
 </body>
