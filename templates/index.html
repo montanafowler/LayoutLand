@@ -94,6 +94,7 @@
             <h4>2. Input Image</h4>
             <img id="originalImage" src="data:image/jpg;base64,{{inputData}}" />
             <p id="hiddenSolution" value="{{solution}}"/>
+            <p id="hiddenForbiddenPairs" value="{{forbiddenPairs}}"/>
         </div>
 
         <div id="segmentedImg" class="imageDiv">
@@ -166,7 +167,6 @@
 
       function allowDrop(ev) {
         if (document.getElementById(ev.target.id).children.length == 0) {
-          console.log("prevent drop of ", ev.target.id);
           ev.preventDefault();
         }
       }
@@ -234,6 +234,7 @@
         }
         // prepare solution for calculations
         var text = document.getElementById('hiddenSolution').getAttribute("value");
+        console.log("hiddensolution raw text ", text);
         //console.log(text);
         var solutionDictionary = JSON.parse(text); // this will convert your json string to a javascript object
         var bestAppSpots = ['3_2', '3_3', '4_2', '4_3', '5_2', '5_3', '3_1', '4_1'];
@@ -241,16 +242,13 @@
         var worstAppSpots = ['1_0', '1_1', '0_0', '0_1', '0_2', '0_3'];
         var spots = [];
         var score = 0;
+        var total = 0;
 
         // now we score the layout based on their dictionary and our json solution + forbidden pairs
         for (var appSpotIdUser in appSpotDictionary) {
+          total += 1;
             // check if the property/key is defined in the object itself, not in parent
             if (appSpotDictionary.hasOwnProperty(appSpotIdUser)) {
-                //console.log(appSpotIdUser, appSpotDictionary[appSpotIdUser]);
-                console.log("\tappSpotDictionary.hasOwnProperty(appSpotIdUser) ", appSpotDictionary.hasOwnProperty(appSpotIdUser));
-                console.log("\tbestAppSpots.includes(appSpotIdUser) ", bestAppSpots.includes(appSpotIdUser));
-                console.log("\tmediumAppSpots.includes(appSpotIdUser) ", mediumAppSpots.includes(appSpotIdUser));
-
                 // determine what type of spot it is
                 if (bestAppSpots.includes(appSpotIdUser)) {
                   spots = bestAppSpots;
@@ -262,14 +260,7 @@
                 //console.log("spots", spots);
                 // loop through spots to see if the app the user chose is included in this section for the solution
                 for (var spot in spots) {
-                  console.log("\t\tspots ", spots);
-                  console.log("\t\tspots[spot] ", spots[spot]);
-                  console.log("\t\tspot ", spot);
-                  console.log("\t\tsolutionDictionary.hasOwnProperty(spot) ", solutionDictionary.hasOwnProperty(spots[spot]));
                   if (solutionDictionary.hasOwnProperty(spots[spot])) {
-                    console.log("\t\t\tappSpotIdUser", appSpotIdUser);
-                    console.log("\t\t\tsolutionDictionary[spot]", solutionDictionary[spots[spot]]);
-                    console.log("\t\t\tappSpotDictionary[appSpotIdUser]", appSpotDictionary[appSpotIdUser]);
                     // we found a match in the same category as the solution
                     if (solutionDictionary[spots[spot]] == appSpotDictionary[appSpotIdUser]) {
                       score += 1; // they get a point
@@ -277,10 +268,14 @@
                     }
                   }
                 }
+
             }
         }
-        console.log("SCORE: ", score);
-        document.getElementById('score').innerText = 'Score: ' + score.toString();
+
+        text = document.getElementById('hiddenForbiddenPairs').getAttribute("value");
+        var forbiddenPairs = JSON.parse(text);
+        console.log("solutionDictionary", solutionDictionary);
+        console.log("forbiddenPairs", forbiddenPairs);
 
         for (let r = 0; r < parseInt('{{rows}}'); r++) {
           for (let c = 0; c < parseInt('{{cols}}'); c++) {
@@ -292,8 +287,34 @@
             clonedAppIcon.setAttribute("draggable", "false"); //make it not draggable anymore
             clonedAppIcon.setAttribute("dragstart", "");
             solutionDiv.appendChild(clonedAppIcon);
+
+            // check for forbidden neighbors for this app in the user's layout
+            var appIdUser = appSpotDictionary[r.toString() + '_' + c.toString()]; //A1
+
+            // we only need to check for forbidden neighbors if it has forbidden neighbors
+            if (forbiddenPairs.hasOwnProperty(appIdUser)) {
+              console.log("appIdUser", appIdUser);
+              console.log("in forbidden pairs");
+              for (let dr = -1; dr < 2; dr++) {
+                for (let dc = -1; dc < 2; dc++) {
+                  if ((dr != dc) && ((r + dr) > 0) && ((r + dr) < 6) && ((c + dc) > 0) && ((c + dc) < 4)) {
+                    if (appSpotDictionary.hasOwnProperty((r + dr).toString() + "_" + (c + dc).toString())) {
+                      if(forbiddenPairs[appIdUser].includes(appSpotDictionary[(r + dr).toString() + "_" + (c + dc).toString()])) {
+                        console.log("forbidden pairs are next to each other!");
+                        score -= 1;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+
           }
         }
+
+        console.log("SCORE: ", score);
+        document.getElementById('score').innerText = 'Score: ' + score.toString() + "/" + total.toString();
       }
     </script>
 </body>

@@ -24,3 +24,215 @@
 'B1': {'B2', 'A2'}, 
 'A1': {'B2', 'D2'}, 
 'C3': {'E3', 'A0', 'D1', 'D3'}}
+
+color0 percentage 0.30666666666666664
+color1 percentage 0.30666666666666664
+color0 percentage 0.32
+color1 percentage 0.33666666666666667
+A2 and B1 are similar: True
+color0 percentage 0.32
+color1 percentage 0.38666666666666666
+A2 and B2 are similar: True
+color0 percentage 0.66
+color1 percentage 0.66
+color0 percentage 0.66
+color1 percentage 0.6066666666666667
+C2 and E0 are similar: True
+color0 percentage 0.66
+color1 percentage 0.66
+C2 and F0 are similar: True
+color0 percentage 0.66
+color1 percentage 0.6366666666666667
+C2 and B3 are similar: True
+color0 percentage 0.44
+color1 percentage 0.44
+color0 percentage 0.4166666666666667
+color1 percentage 0.4166666666666667
+color0 percentage 0.34
+color1 percentage 0.3933333333333333
+C0 and D2 are similar: True
+color0 percentage 0.6066666666666667
+color1 percentage 0.66
+E0 and C2 are similar: True
+color0 percentage 0.6066666666666667
+color1 percentage 0.6066666666666667
+color0 percentage 0.6066666666666667
+color1 percentage 0.66
+E0 and F0 are similar: True
+color0 percentage 0.6066666666666667
+color1 percentage 0.5133333333333333
+E0 and B2 are similar: True
+color0 percentage 0.6066666666666667
+color1 percentage 0.6366666666666667
+E0 and B3 are similar: True
+color0 percentage 0.53
+color1 percentage 0.53
+color0 percentage 0.53
+color1 percentage 0.5433333333333333
+F2 and E2 are similar: True
+color0 percentage 0.43
+color1 percentage 0.43
+color0 percentage 0.43
+color1 percentage 0.5133333333333333
+A1 and B2 are similar: True
+color0 percentage 0.43
+color1 percentage 0.5
+A1 and D2 are similar: True
+color0 percentage 0.3566666666666667
+color1 percentage 0.3566666666666667
+color0 percentage 0.3566666666666667
+color1 percentage 0.43666666666666665
+D0 and F3 are similar: True
+color0 percentage 0.33666666666666667
+color1 percentage 0.32
+B1 and A2 are similar: True
+color0 percentage 0.33666666666666667
+color1 percentage 0.33666666666666667
+color0 percentage 0.33666666666666667
+color1 percentage 0.38666666666666666
+B1 and B2 are similar: True
+color0 percentage 0.66
+color1 percentage 0.66
+F0 and C2 are similar: True
+color0 percentage 0.66
+color1 percentage 0.6066666666666667
+F0 and E0 are similar: True
+color0 percentage 0.66
+color1 percentage 0.66
+color0 percentage 0.66
+color1 percentage 0.6366666666666667
+F0 and B3 are similar: True
+color0 percentage 0.4166666666666667
+color1 percentage 0.4166666666666667
+color0 percentage 0.4166666666666667
+color1 percentage 0.5133333333333333
+A3 and B2 are similar: True
+color0 percentage 0.36666666666666664
+color1 percentage 0.36666666666666664
+color0 percentage 0.6733333333333333
+color1 percentage 0.6733333333333333
+color0 percentage 0.6933333333333334
+color1 percentage 0.6933333333333334
+color0 percentage 0.43666666666666665
+color1 percentage 0.3566666666666667
+F3 and D0 are similar: True
+color0 percentage 0.3466666666666667
+color1 percentage 0.3466666666666667
+color0 percentage 0.38666666666666666
+color1 percentage 0.32
+B2 and A2 are similar: True
+color0 percentage 0.5133333333333333
+color1 percentage 0.6066666666666667
+B2 and E0 are similar: True
+color0 percentage 0.5133333333333333
+color1 percentage 0.43
+B2 and A1 are similar: True
+color0 percentage 0.38666666666666666
+color1 percentage 0.33666666666666667
+B2 and B1 are similar: True
+color0 percentage 0.5133333333333333
+color1 percentage 0.4166666666666667
+B2 and A3 are similar: True
+color0 percentage 0.5133333333333333
+color1 percentage 0.5133333333333333
+color0 percentage 0.5133333333333333
+color1 percentage 0.5
+B2 and D2 are similar: True
+color0 percentage 0.8
+color1 percentage 0.8
+color0 percentage 0.8
+color1 percentage 0.8066666666666666
+D3 and D1 are similar: True
+color0 percentage 0.8
+color1 percentage 0.8633333333333333
+D3 and E3 are similar: True
+color0 percentage 0.8
+color1 percentage 0.8133333333333334
+D3 and A0 are similar: True
+color0 percentage 0.8
+color1 percentage 0.8166666666666667
+D3 and C3 are similar: True
+color0 percentage 0.8066666666666666
+color1 percentage 0.8
+D1 and D3 are similar: True
+color0 percentage 0.8066666666666666
+color1 percentage 0.8066666666666666
+color0 percentage 0.8066666666666666
+color1 percentage 0.8633333333333333
+D1 and E3 are similar: True
+color0 percentage 0.8066666666666666
+color1 percentage 0.8133333333333334
+D1 and A0 are similar: True
+color0 percentage 0.8066666666666666
+color1 percentage 0.8166666666666667
+D1 and C3 are similar: True
+color0 percentage 0.5433333333333333
+color1 percentage 0.53
+E2 and F2 are similar: True
+color0 percentage 0.5433333333333333
+color1 percentage 0.5433333333333333
+color0 percentage 0.3933333333333333
+color1 percentage 0.34
+D2 and C0 are similar: True
+color0 percentage 0.5
+color1 percentage 0.43
+D2 and A1 are similar: True
+color0 percentage 0.5
+color1 percentage 0.5133333333333333
+D2 and B2 are similar: True
+color0 percentage 0.5
+color1 percentage 0.5
+color0 percentage 0.6366666666666667
+color1 percentage 0.66
+B3 and C2 are similar: True
+color0 percentage 0.6366666666666667
+color1 percentage 0.6066666666666667
+B3 and E0 are similar: True
+color0 percentage 0.6366666666666667
+color1 percentage 0.66
+B3 and F0 are similar: True
+color0 percentage 0.6366666666666667
+color1 percentage 0.6366666666666667
+color0 percentage 0.8633333333333333
+color1 percentage 0.8
+E3 and D3 are similar: True
+color0 percentage 0.8633333333333333
+color1 percentage 0.8066666666666666
+E3 and D1 are similar: True
+color0 percentage 0.8633333333333333
+color1 percentage 0.8633333333333333
+color0 percentage 0.8633333333333333
+color1 percentage 0.8133333333333334
+E3 and A0 are similar: True
+color0 percentage 0.8633333333333333
+color1 percentage 0.8166666666666667
+E3 and C3 are similar: True
+color0 percentage 0.8133333333333334
+color1 percentage 0.8
+A0 and D3 are similar: True
+color0 percentage 0.8133333333333334
+color1 percentage 0.8066666666666666
+A0 and D1 are similar: True
+color0 percentage 0.8133333333333334
+color1 percentage 0.8633333333333333
+A0 and E3 are similar: True
+color0 percentage 0.8133333333333334
+color1 percentage 0.8133333333333334
+color0 percentage 0.8133333333333334
+color1 percentage 0.8166666666666667
+A0 and C3 are similar: True
+color0 percentage 0.8166666666666667
+color1 percentage 0.8
+C3 and D3 are similar: True
+color0 percentage 0.8166666666666667
+color1 percentage 0.8066666666666666
+C3 and D1 are similar: True
+color0 percentage 0.8166666666666667
+color1 percentage 0.8633333333333333
+C3 and E3 are similar: True
+color0 percentage 0.8166666666666667
+color1 percentage 0.8133333333333334
+C3 and A0 are similar: True
+color0 percentage 0.8166666666666667
+color1 percentage 0.8166666666666667
+count 27.0

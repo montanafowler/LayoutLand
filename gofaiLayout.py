@@ -200,7 +200,7 @@ def fitLayout(bestAppSpots, mediumAppSpots, worstAppSpots, classificationDict, t
             app = randomlySelectGoodApp(layoutMap, appSpot, classificationDict, topApps)
             #print("\tselected app: " + app + " classified as " + classificationDict[app] + " for " + appSpot)
 
-            #print("\tapp in forbiddenPairs: " + str(app in forbiddenPairs.keys()))
+            print("\tapp in forbiddenPairs: " + str(app in forbiddenPairs.keys()))
             # if there are pairs to remove
             if (app in forbiddenPairs.keys()):
                 appsToRemove = forbiddenPairs[app]
@@ -241,7 +241,7 @@ if __name__ == "__main__":
 
     # go through and find the color pairs that cannot happen
     forbiddenPairs = processHistagrams(filepath)
-    #print(forbiddenPairs)
+    print(forbiddenPairs)
 
     #top apps of 2019 with added default apple ones
     topApps = set(['youtube', 'television', 'instagram', 'snapchat', 'tiktok', 'messenger', 'gmail', 'netflix', 'facebook', 'maps', 'amazon', 'spotify', 'doordash', 'whatsapp', 'faceapp', 'uber', 'yolo', 'hulu', 'venmo', 'bitmoji', 'chrome'])
@@ -276,4 +276,13 @@ if __name__ == "__main__":
         layoutFile.write(json.dumps(layoutMap))
 
     with open(filepath + "\\forbiddenPairs.txt", "w+") as forbiddenPairsFile:
-        forbiddenPairsFile.write(json.dumps(forbiddenPairs))
+        fpString = str(forbiddenPairs)
+        length = len(fpString)
+        print("length " + str(length))
+        fpString = fpString[1:length - 1].replace('{', '[')
+        fpString = fpString.replace('}', ']')
+        fpString = fpString.replace("\'", "\"")
+        fpString = '{' + fpString + '}'
+        print("fpString " + fpString)
+        forbiddenPairsFile.write(fpString)
+        #print("json dumps " + str(json.dumps(fpString)))
